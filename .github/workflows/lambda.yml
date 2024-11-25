@@ -1,0 +1,43 @@
+name: Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: yarn install
+
+      # Step 4: Build the project
+      - name: Build the project
+        run: yarn build
+
+      # Step 5: Deploy using Serverless Framework
+      - name: Deploy using Serverless
+        env:
+          PORT: ${{ secrets.PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          AWS_CLOUD_ACCESS_KEY_ID: ${{ secrets.AWS_CLOUD_ACCESS_KEY_ID }}
+          AWS_CLOUD_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLOUD_SECRET_ACCESS_KEY }}
+          AWS_CLOUD_REGION: ${{ secrets.AWS_CLOUD_REGION }}
+          AWS_CLOUD_BUCKET_NAME: ${{ secrets.AWS_CLOUD_BUCKET_NAME }}
+        run: yarn deploy
