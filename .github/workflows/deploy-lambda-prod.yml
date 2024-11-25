@@ -1,4 +1,4 @@
-name: Lambda
+name: Lambda Deployment
 
 on:
   push:
@@ -28,8 +28,12 @@ jobs:
       - name: Build the project
         run: yarn build
 
-      # Step 5: Deploy using Serverless Framework
-      - name: Deploy using Serverless
+      # Step 5: Setup Serverless Framework
+      - name: Install Serverless Framework
+        run: yarn global add serverless@3.39.0
+
+      # Step 6: Deploy using Serverless Framework
+      - name: Deploy using Serverless Framework
         env:
           PORT: ${{ secrets.PORT }}
           NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -40,4 +44,4 @@ jobs:
           AWS_CLOUD_SECRET_ACCESS_KEY: ${{ secrets.AWS_CLOUD_SECRET_ACCESS_KEY }}
           AWS_CLOUD_REGION: ${{ secrets.AWS_CLOUD_REGION }}
           AWS_CLOUD_BUCKET_NAME: ${{ secrets.AWS_CLOUD_BUCKET_NAME }}
-        run: yarn deploy
+        run: serverless deploy --verbose
