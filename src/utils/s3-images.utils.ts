@@ -44,7 +44,7 @@ export const generatePresignedUrl = async (folderName: string, fileData: FileDat
       Key: uniqueFileName,
       ContentType: fileData.fileType,
     })
-    return await getSignedUrl(s3Client, command, { expiresIn: 600})
+    return await getSignedUrl(s3Client, command, { expiresIn: 600 })
   } catch (error) {
     handleError(error, "generatePresignedUrlForFile")
     return null
@@ -73,9 +73,12 @@ export const deleteFile = async (url: string): Promise<void> => {
   }
 }
 
-
 // Update metadata for a single file
-export const updateFileMetadata = async (folderName: string, fileName: string, metadata: Record<string, string>): Promise<void> => {
+export const updateFileMetadata = async (
+  folderName: string,
+  fileName: string,
+  metadata: Record<string, string>,
+): Promise<void> => {
   try {
     FileNameSchema.parse(fileName)
     const fullFileName = `${folderName}/${fileName}`
@@ -110,7 +113,7 @@ export const generatePresignedUrls = async (folderName: string, fileData: FileDa
 }
 
 // Delete multiple files
-export const deleteMultipleFiles = async (urls:string[]): Promise<void> => {
+export const deleteMultipleFiles = async (urls: string[]): Promise<void> => {
   try {
     await Promise.all(urls.map((url) => deleteFile(url)))
     // console.log("Files deleted successfully.")

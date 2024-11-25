@@ -15,17 +15,24 @@ export const envConfig = {
   FILE_UPLOAD_ALLOWED_TYPES: process.env.FILE_UPLOAD_ALLOWED_TYPES || "image/jpeg,image/png,image/gif",
   FILE_UPLOAD_MIN_FILES: process.env.FILE_UPLOAD_MIN_FILES || 0,
 
-
   // Image upload
-  CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID ,
-  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID ,
-  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY ,
-  R2_BUCKET_NAME: process.env.R2_BUCKET_NAME
+  CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+  R2_BUCKET_NAME: process.env.R2_BUCKET_NAME,
 }
 
 // Validate required environment variables
 export const validateEnv = () => {
-  const required = ["MONGODB_URI", "ACCESS_TOKEN_SECRET", "REFRESH_TOKEN_SECRET","CLOUDFLARE_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME"]
+  const required = [
+    "MONGODB_URI",
+    "ACCESS_TOKEN_SECRET",
+    "REFRESH_TOKEN_SECRET",
+    "CLOUDFLARE_ACCOUNT_ID",
+    "R2_ACCESS_KEY_ID",
+    "R2_SECRET_ACCESS_KEY",
+    "R2_BUCKET_NAME",
+  ]
   for (const key of required) {
     if (!process.env[key]) {
       throw new Error(`Missing required environment variable: ${key}`)

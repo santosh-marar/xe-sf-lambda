@@ -100,5 +100,9 @@ apartmentSchema.index({ isAvailable: 1, isActive: 1 })
 // Apply pagination plugin
 apartmentSchema.plugin(mongoosePaginate)
 
-const Apartment = mongoose.model<ApartmentDocument, PaginateModel<ApartmentDocument>>("Apartment", apartmentSchema, "apartments")
+const Apartment = mongoose.model<ApartmentDocument, PaginateModel<ApartmentDocument>>(
+  "Apartment",
+  apartmentSchema,
+  "apartments",
+)
 export default Apartment

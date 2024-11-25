@@ -96,7 +96,6 @@ const roomSchema = new Schema<RoomDocument>(
   { timestamps: true },
 )
 
-
 // roomSchema.index({ city: 1 })
 // roomSchema.index({ chowk: "text" })
 // roomSchema.index({ fare: 1 })

@@ -2,7 +2,12 @@ import { Request, Response, NextFunction } from "express"
 import asyncMiddleware from "../middlewares/async.middlewares"
 import Room from "../models/room.models"
 import CustomErrorHandler from "../utils/error.utils"
-import { roomCreateSchemaValidation, RoomCreateTypes, roomUpdateSchema, RoomUpdateTypes } from "../validators/room.validators"
+import {
+  roomCreateSchemaValidation,
+  RoomCreateTypes,
+  roomUpdateSchema,
+  RoomUpdateTypes,
+} from "../validators/room.validators"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
 import Apartment from "../models/apartment.models"
 import { deleteMultipleFiles, generatePresignedUrls } from "../utils/s3-images.utils"
@@ -183,7 +188,7 @@ export const deleteRoom = asyncMiddleware(async (req: Request, res: Response) =>
 // @access  Authenticated user only
 export const getPresignedUrls = asyncMiddleware(async (req: Request, res: Response) => {
   const { imageData } = req.body
-  
+
   // Ensure imageData is provided
   if (!imageData || imageData.length === 0) {
     throw new CustomErrorHandler(400, "No image data provided")

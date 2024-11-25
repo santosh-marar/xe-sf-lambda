@@ -16,8 +16,12 @@ router.post("/", isAuthenticated, authorizeRoles([USER_ROLES.SPACE_PROVIDER, USE
 
 router.get("/", getAllRooms)
 
-router.get("/my-rooms", isAuthenticated, authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]), getMyAllRooms)
-
+router.get(
+  "/my-rooms",
+  isAuthenticated,
+  authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
+  getMyAllRooms,
+)
 
 // roomImagesGetPreSignedPostUrl
 
@@ -25,7 +29,7 @@ router.post(
   "/get-signed-url",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
-  getPresignedUrls
+  getPresignedUrls,
 )
 
 router.get("/:id", getRoomById)

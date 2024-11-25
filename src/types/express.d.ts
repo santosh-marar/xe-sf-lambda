@@ -1,12 +1,12 @@
-import { Request } from "express";
+import { Request } from "express"
 
 declare global {
   namespace Express {
     interface Request {
       user?: {
-        _id: string;
-        roles: string[];
-      };
+        _id: string
+        roles: string[]
+      }
     }
   }
 }

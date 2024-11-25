@@ -110,7 +110,6 @@ export const adminDashboardApi = asyncMiddleware(async (req: Request, res: Respo
   })
 })
 
-
 // @desc Get all users with their respective user details
 // @route GET /api/v1/users-details
 // @access Private only Admin

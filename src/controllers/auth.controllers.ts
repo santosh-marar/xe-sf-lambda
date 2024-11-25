@@ -56,7 +56,6 @@ export const loginUser = asyncMiddleware(async (req: Request, res: Response) => 
 // @route POST /api/v1/auth/logout
 // @access Private (only accessible to authenticated users)
 export const logoutUser = asyncMiddleware(async (req: Request, res: Response) => {
-  
   res.clearCookie("jwtToken", {
     httpOnly: process.env.NODE_ENV !== "DEVELOPMENT",
     sameSite: process.env.NODE_ENV === "DEVELOPMENT" ? "lax" : "none",
@@ -70,38 +69,37 @@ export const logoutUser = asyncMiddleware(async (req: Request, res: Response) =>
   })
 })
 
-
 // @desc Refresh
 // @route POST /refresh
 // @access Public - because access token has expired
 // Define a custom payload interface to ensure TypeScript recognizes 'user_id' and 'roles'
 interface CustomJwtPayload extends JwtPayload {
-  user_id: string;
-  roles: string[]; // Adjust type if 'roles' is structured differently
+  user_id: string
+  roles: string[] // Adjust type if 'roles' is structured differently
 }
 
 export const refreshToken = asyncMiddleware(async (req, res, next) => {
-  const { jwtToken } = req.cookies;
-  
+  const { jwtToken } = req.cookies
+
   if (!jwtToken) {
-    return next(new CustomErrorHandler(401, "Please login first"));
+    return next(new CustomErrorHandler(401, "Please login first"))
   }
 
-  const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET!;
-  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET!;
+  const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET!
+  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET!
 
   jwt.verify(jwtToken, refreshTokenSecret, async (err: Error | null, decoded: JwtPayload | string | undefined) => {
     if (err) {
-      return next(new CustomErrorHandler(403, "Forbidden"));
+      return next(new CustomErrorHandler(403, "Forbidden"))
     }
 
-    const payload = decoded as CustomJwtPayload;
+    const payload = decoded as CustomJwtPayload
 
     try {
-      const foundUser = await User.findById(payload.user_id);
+      const foundUser = await User.findById(payload.user_id)
 
       if (!foundUser) {
-        return next(new CustomErrorHandler(401, "Unauthorized"));
+        return next(new CustomErrorHandler(401, "Unauthorized"))
       }
 
       // Generate a new access token
@@ -111,12 +109,12 @@ export const refreshToken = asyncMiddleware(async (req, res, next) => {
           roles: foundUser.roles,
         },
         accessTokenSecret,
-        { expiresIn: "15m" }
-      );
+        { expiresIn: "15m" },
+      )
 
-      res.json({ accessToken });
+      res.json({ accessToken })
     } catch (error) {
-      next(error);
+      next(error)
     }
-  });
-});
+  })
+})

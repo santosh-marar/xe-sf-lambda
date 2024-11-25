@@ -2,25 +2,14 @@ import { Request, Response, NextFunction } from "express"
 import CustomErrorHandler from "../utils/error.utils"
 import { ZodError } from "zod"
 
-export default function errorMiddleware(
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export default function errorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
   // Default error properties
   let customError = err
 
   // Check if the error is a Zod validation error
   if (err instanceof ZodError) {
-    const formattedErrors = err.errors.map(
-      (e) => `${e.path.join(".")}: ${e.message}`,
-    )
-    customError = new CustomErrorHandler(
-      400,
-      "Validation Error",
-      formattedErrors,
-    )
+    const formattedErrors = err.errors.map((e) => `${e.path.join(".")}: ${e.message}`)
+    customError = new CustomErrorHandler(400, "Validation Error", formattedErrors)
   }
 
   // Handle MongoDB "CastError" (invalid ObjectId)

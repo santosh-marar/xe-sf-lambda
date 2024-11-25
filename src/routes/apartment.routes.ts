@@ -3,7 +3,8 @@ import {
   createApartment,
   deleteApartment,
   getAllApartments,
-  getApartmentById, getMyAllApartments,
+  getApartmentById,
+  getMyAllApartments,
   getSignedUrlForApartmentImages,
   updateApartment,
 } from "../controllers/apartment.controllers"
@@ -23,7 +24,7 @@ apartmentRouter.get(
   "/my-apartments",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_BROKER, USER_ROLES.SPACE_PROVIDER]),
-  getMyAllApartments
+  getMyAllApartments,
 )
 
 // Get all apartments

@@ -1,5 +1,5 @@
 import express from "express"
-import { getUserById, updateUser, deleteUser,getPresignedUrlForUserAvatar } from "../controllers/user.controllers"
+import { getUserById, updateUser, deleteUser, getPresignedUrlForUserAvatar } from "../controllers/user.controllers"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 
 const router = express.Router()

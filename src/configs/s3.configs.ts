@@ -1,7 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3"
 // import "dotenv/config"
 
-
 // Initialize S3 Client for AWS
 export const initializeS3Client = () => {
   return new S3Client({
@@ -12,4 +11,3 @@ export const initializeS3Client = () => {
     },
   })
 }
-

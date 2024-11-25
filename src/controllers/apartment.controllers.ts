@@ -2,7 +2,12 @@ import { Request, Response, NextFunction } from "express"
 import asyncMiddleware from "../middlewares/async.middlewares"
 import Apartment from "../models/apartment.models"
 import CustomErrorHandler from "../utils/error.utils"
-import { apartmentZodSchema, apartmentUpdateSchema, ApartmentCreateTypes, ApartmentUpdateTypes } from "../validators/apartment.validators"
+import {
+  apartmentZodSchema,
+  apartmentUpdateSchema,
+  ApartmentCreateTypes,
+  ApartmentUpdateTypes,
+} from "../validators/apartment.validators"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
 import { deleteMultipleFiles, generatePresignedUrls } from "../utils/s3-images.utils"
 
@@ -164,7 +169,7 @@ export const deleteApartment = asyncMiddleware(async (req: Request, res: Respons
 
   // Ensure imageData is provided
   if (foundApartment?.spaceImagesUrl && foundApartment?.spaceImagesUrl.length > 0) {
-    const deleteImage:void = await deleteMultipleFiles(foundApartment?.spaceImagesUrl)
+    const deleteImage: void = await deleteMultipleFiles(foundApartment?.spaceImagesUrl)
   }
 
   const deletedApartment = await Apartment.findByIdAndDelete(req.params.id)
@@ -209,7 +214,6 @@ export const getMyAllApartments = asyncMiddleware(async (req: Request, res: Resp
     data: result,
   })
 })
-
 
 // @desc Get signedUrl for apartments images
 // @route   GET /api/v1/apartments/get-signed-url

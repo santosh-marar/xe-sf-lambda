@@ -6,10 +6,9 @@ export default class CustomErrorHandler extends Error {
   constructor(statusCode: number, message: string, errors?: string[]) {
     super(message)
     this.statusCode = statusCode || 500
-    this.success = false 
+    this.success = false
     this.errors = errors // Optionally capture the errors array
 
     Error.captureStackTrace(this, this.constructor)
   }
 }
-
