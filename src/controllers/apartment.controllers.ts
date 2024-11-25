@@ -30,7 +30,7 @@ export const createApartment = asyncMiddleware(async (req: Request, res: Respons
 // @desc    Get all apartments
 // @route   GET /api/v1/apartments
 // @access  Public
-export const getAllApartments = asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllApartments = asyncMiddleware(async (req: Request, res: Response) => {
   const {
     page = 1,
     limit = 10,

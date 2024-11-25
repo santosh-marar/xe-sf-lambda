@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response } from "express";
 import serverless from "serverless-http";
 import errorMiddleware from "./middlewares/error.middlewares";
 import cors from "cors";
