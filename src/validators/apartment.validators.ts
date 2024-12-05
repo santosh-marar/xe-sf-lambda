@@ -43,13 +43,12 @@ export const apartmentZodSchema = z.object({
     .default(LISTING_TYPE.RENT)
     .transform((val) => val.toLowerCase().trim()),
   noOfBedrooms: z.number().min(1, { message: "Must have at least one bedroom" }),
-  noOfBathrooms: z.number().min(1, { message: "Must have at least one bathroom" }),
-  noOfKitchens: z.number().min(1, { message: "Must have at least one kitchen" }),
+  noOfBathrooms: z.number().min(0).default(0),
+  noOfKitchens: z.number().min(0).default(0),
   noOfParkingSpaces: z.string().optional(),
   furnish: z.string().transform((val) => val.toLowerCase().trim()),
   floor: z.number().min(0, { message: "Floor must be non-negative" }),
   isAvailable: z.boolean().optional().default(true),
-  isActive: z.boolean().optional().default(true),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 })

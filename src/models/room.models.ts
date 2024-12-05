@@ -55,7 +55,6 @@ export interface IRoom extends Document {
   nearPopularPlace: string
   listingType: LISTING_TYPE
   isAvailable?: boolean
-  isActive?: boolean
 }
 
 export interface RoomDocument extends IRoom, Document {}
@@ -91,7 +90,6 @@ const roomSchema = new Schema<RoomDocument>(
     nearPopularPlace: { type: String, required: true, lowercase: true, trim: true },
     listingType: { type: String, enum: Object.values(LISTING_TYPE), default: LISTING_TYPE.RENT, required: true },
     isAvailable: { type: Boolean, default: true },
-    isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
 )

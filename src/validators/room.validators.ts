@@ -36,7 +36,6 @@ export const roomCreateSchemaValidation = z.object({
   nearPopularPlace: z.string().trim().toLowerCase().min(1, "Near popular place name is required"),
   listingType: z.nativeEnum(LISTING_TYPE).default(LISTING_TYPE.RENT),
   isAvailable: z.boolean().default(true),
-  isActive: z.boolean().default(true),
 })
 
 export type RoomCreateTypes = z.infer<typeof roomCreateSchemaValidation>

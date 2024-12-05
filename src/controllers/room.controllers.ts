@@ -240,21 +240,19 @@ export const getMyAllRooms = asyncMiddleware(async (req: Request, res: Response)
 // @route   GET /api/v1/spaces/search
 // @access  Public
 export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => {
-  const {
-    spaceType,
-    locationQuery,
-    minFare = 0,
-    maxFare = Number.MAX_SAFE_INTEGER,
-    genderPreference,
-    isSpaceProviderLiving,
-    sortBy = "createdAt",
-    sortOrder = "desc",
-    minBedrooms,
-    limit = 10,
-    page = 1,
-    isAvailable = "true",
-    isActive = "true",
-  } = req.query
+ const {
+   spaceType,
+   locationQuery,
+   minFare = 0,
+   maxFare = Number.MAX_SAFE_INTEGER,
+   genderPreference,
+   isSpaceProviderLiving,
+   sortBy = "createdAt",
+   sortOrder = "desc",
+   minBedrooms,
+   limit = 10,
+   page = 1,
+ } = req.query
 
   let sortOption: any
   switch (sortBy) {
@@ -268,12 +266,17 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
   }
 
   const matchStage: any = {
-    fare: { $gte: parseInt(minFare as string), $lte: parseInt(maxFare as string) },
-    isAvailable: isAvailable === "true",
-    isActive: isActive === "true",
+    fare: {
+      $gte: parseInt(minFare as string, 10),
+      $lte: parseInt(maxFare as string, 10),
+    },
+    ...(req.query.isAvailable !== undefined && {
+      isAvailable: req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : null,
+    }),
     ...(genderPreference && { genderPreference }),
     ...(isSpaceProviderLiving !== undefined && { isSpaceProviderLiving: isSpaceProviderLiving === "true" }),
   }
+
 
   if (locationQuery) {
     matchStage.$or = [
@@ -308,6 +311,7 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
         spaceImagesUrl: 1,
         descriptionOfSpace: 1,
         nearPopularPlace: 1,
+        isAvailable: 1,
       },
     },
   ])
@@ -327,6 +331,7 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
         spaceImagesUrl: 1,
         descriptionOfSpace: 1,
         nearPopularPlace: 1,
+        isAvailable: 1,
       },
     },
   ])
