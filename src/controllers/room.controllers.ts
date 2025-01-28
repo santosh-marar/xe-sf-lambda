@@ -265,17 +265,18 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
       break
   }
 
-  const matchStage: any = {
-    fare: {
-      $gte: parseInt(minFare as string, 10),
-      $lte: parseInt(maxFare as string, 10),
-    },
-    ...(req.query.isAvailable !== undefined && {
-      isAvailable: req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : null,
-    }),
-    ...(genderPreference && { genderPreference }),
-    ...(isSpaceProviderLiving !== undefined && { isSpaceProviderLiving: isSpaceProviderLiving === "true" }),
-  }
+const matchStage: any = {
+  fare: {
+    $gte: parseInt(minFare as string, 10),
+    $lte: parseInt(maxFare as string, 10),
+  },
+  ...(req.query.isAvailable !== undefined && {
+    isAvailable: req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : null,
+  }),
+  ...(genderPreference && { genderPreference }),
+  ...(isSpaceProviderLiving !== undefined && { isSpaceProviderLiving: isSpaceProviderLiving === "true" }),
+}
+
 
 
   if (locationQuery) {
