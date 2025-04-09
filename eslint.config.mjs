@@ -13,10 +13,9 @@ export default tseslint.config(
     },
     rules: {
       'no-console': 'off',
-      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-
     }
   }
 );

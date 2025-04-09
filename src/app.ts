@@ -13,26 +13,67 @@ import apartmentRoutes from "./routes/apartment.routes"
 import { limiter } from "./utils/rate.limit.utils"
 import searchRoutes from "./routes/search.routes"
 import adminRoutes from "./routes/admin.routes"
+import imageRoutes from "./routes/image.routes"
 
 const app: Application = express()
 
-// Middleware
-app.use(express.json())
-app.use(
-  cors({
-    origin: [
-      process.env.FRONTEND_URL as string,
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://192.168.1.83:3000",
-      "192.168.1.83:3000",
-      "https://cityhom-com-frotnend.vercel.app",
-      "https://www.cityhom.com",
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-  }),
-)
+// // Middleware
+// app.use(express.json())
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://192.168.1.83:3000",
+  "https://cityhom-com-frotnend.vercel.app",
+  "https://www.cityhom.com",
+].filter(Boolean) // Remove any undefined values
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       // Allow requests with no origin (like mobile apps or curl requests)
+//       if (!origin) return callback(null, true)
+
+//       if (allowedOrigins.includes(origin)) {
+//         return callback(null, true)
+//       }
+
+//       const msg = `The CORS policy for this site does not allow access from ${origin}`
+//       return callback(new Error(msg), false)
+//     },
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//     preflightContinue: false,
+//     optionsSuccessStatus: 204,
+//   }),
+// )
+
+// // Handle preflight requests
+// app.options("*", cors())
+
+// Move this before defining any routes
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+    const msg = `The CORS policy for this site does not allow access from ${origin}`
+    return callback(new Error(msg), false)
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+}));
+
+app.options("*", cors());
+app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images
+
+// app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser() as express.RequestHandler)
 app.use(limiter)
@@ -40,8 +81,6 @@ app.use(limiter)
 if (process.env.NODE_ENV === "dev") {
   app.use(morgan("dev"))
 }
-
-app.use(morgan("dev"))
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
@@ -55,6 +94,7 @@ app.use("/api/v1/rooms", roomRoutes)
 app.use("/api/v1/apartments", apartmentRoutes)
 app.use("/api/v1/spaces", searchRoutes)
 app.use("/api/v1/admin", adminRoutes)
+app.use("/api/v1/images", imageRoutes)
 
 // Connect to database before initializing server
 ;(async () => {
@@ -67,7 +107,7 @@ app.use("/api/v1/admin", adminRoutes)
 })()
 
 // Error middleware
-app.use(errorMiddleware) // Uncommented to handle errors
+// app.use(errorMiddleware) // Uncommented to handle errors
 
 // Export the serverless handler
 export const handler = serverless(app)
