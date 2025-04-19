@@ -14,7 +14,7 @@ const s3Client = new S3Client({
   region: process.env.AWS_CLOUD_REGION as string,
 })
 const BUCKET_NAME = process.env.AWS_CLOUD_BUCKET_NAME as string
-const MAX_FILE_UPLOAD = 5
+const MAX_FILE_UPLOAD = 20
 
 interface FileData {
   fileName: string

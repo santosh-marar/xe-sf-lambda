@@ -90,10 +90,10 @@ const apartmentSchema = new Schema<ApartmentDocument>(
   { timestamps: true },
 )
 
-apartmentSchema.index({ city: 1 })
-apartmentSchema.index({ chowk: "text" })
-apartmentSchema.index({ fare: 1 })
-apartmentSchema.index({ isAvailable: 1, isActive: 1 })
+// apartmentSchema.index({ city: 1 })
+// apartmentSchema.index({ chowk: "text" })
+// apartmentSchema.index({ fare: 1 })
+// apartmentSchema.index({ isAvailable: 1, isActive: 1 })
 
 // Apply pagination plugin
 apartmentSchema.plugin(mongoosePaginate)

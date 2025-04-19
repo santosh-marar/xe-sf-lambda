@@ -4,6 +4,9 @@ import mongoosePaginate from "mongoose-paginate-v2"
 export enum SPACE_TYPES {
   ROOM = "room",
   APARTMENT = "apartment",
+  HOUSE = "house",
+  FLAT = "flat",
+  LAND = "land",
 }
 
 // Enums
@@ -11,6 +14,7 @@ export enum GENDER_PREFERENCE {
   GIRLS_ONLY = "girlsOnly",
   FOR_ALL = "forAll",
   BOYS_ONLY = "boysOnly",
+  FAMILY_ONLY= "familyOnly",
   FAMILY_AND_GIRLS_ONLY = "familyAndGirlsOnly",
   WORKING_PROFESSIONAL_AND_GIRLS_AND_FAMILY_ONLY = "workingProfessionalAndGirlsAndFamilyOnly",
 }
