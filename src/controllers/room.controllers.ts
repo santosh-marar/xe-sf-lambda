@@ -10,7 +10,7 @@ import {
 } from "../validators/room.validators"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
 import Apartment from "../models/apartment.models"
-import { deleteMultipleFiles, generatePresignedUrls } from "../utils/s3-images.utils"
+import { deleteMultipleFiles, generatePresignedPostUrls } from "../utils/s3-images.utils"
 
 // @desc    Create a new room
 // @route   POST /api/v1/rooms
@@ -189,19 +189,21 @@ export const deleteRoom = asyncMiddleware(async (req: Request, res: Response) =>
 export const getPresignedUrls = asyncMiddleware(async (req: Request, res: Response) => {
   const { imageData } = req.body
 
-  // Ensure imageData is provided
-  if (!imageData || imageData.length === 0) {
-    throw new CustomErrorHandler(400, "No image data provided")
+  if (!imageData || !Array.isArray(imageData)) {
+    return res.status(400).json({ error: "Invalid image data" })
   }
 
-  // Generate presigned URLs
-  const signedUrls = await generatePresignedUrls("room-images", imageData)
+  const { presignedPosts, fileUrls } = await generatePresignedPostUrls("room-images", imageData)
 
-  const extractedBaseUrls = signedUrls.map((url: string) => url.split("?")[0])
+  return res.status(200).json({
+    presignedPosts,
+    fileUrls,
+  })
 
-  // Send the extracted base URLs in the response
-  res.json({ imageUrls: extractedBaseUrls, imagePreSignedUrls: signedUrls })
 })
+
+
+
 
 // @desc Get my rooms
 // @route   GET /api/v1/rooms/my-rooms

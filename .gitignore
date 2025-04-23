@@ -20,12 +20,12 @@ yarn-error.log*
 *.sw?
 
 # Serverless directories        
-    .serverless
-    .build
-    .webpack
-    node_modules
-    .history
-    .serverless_nextjs
-    coverage
+.serverless
+.build
+.webpack
+node_modules
+.history
+.serverless_nextjs
+coverage
 
 

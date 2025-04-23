@@ -9,7 +9,7 @@ import {
   ApartmentUpdateTypes,
 } from "../validators/apartment.validators"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
-import { deleteMultipleFiles, generatePresignedUrls } from "../utils/s3-images.utils"
+import { deleteMultipleFiles, generatePresignedPostUrls } from "../utils/s3-images.utils"
 
 // @desc    Create a new apartment
 // @route   POST /api/v1/apartments
@@ -219,18 +219,16 @@ export const getMyAllApartments = asyncMiddleware(async (req: Request, res: Resp
 // @route   GET /api/v1/apartments/get-signed-url
 // @access  Authenticated user only
 export const getSignedUrlForApartmentImages = asyncMiddleware(async (req: Request, res: Response) => {
-  const { imageData } = req.body
+   const { imageData } = req.body
 
-  // Ensure imageData is provided
-  if (!imageData || imageData.length === 0) {
-    throw new CustomErrorHandler(400, "No image data provided")
-  }
+   if (!imageData || !Array.isArray(imageData)) {
+     return res.status(400).json({ error: "Invalid image data" })
+   }
 
-  // Generate presigned URLs
-  const signedUrls = await generatePresignedUrls("apartment-images", imageData)
+   const { presignedPosts, fileUrls } = await generatePresignedPostUrls("apartment-images", imageData)
 
-  const extractedBaseUrls = signedUrls.map((url: string) => url.split("?")[0])
-
-  // Send the extracted base URLs in the response
-  res.json({ imageUrls: extractedBaseUrls, imagePreSignedUrls: signedUrls })
+   return res.status(200).json({
+     presignedPosts,
+     fileUrls
+   })
 })

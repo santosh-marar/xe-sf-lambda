@@ -4,7 +4,7 @@ import { userUpdateSchema, UserUpdateTypes } from "../validators/user.validators
 import asyncMiddleware from "../middlewares/async.middlewares"
 import CustomErrorHandler from "../utils/error.utils"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
-import { generatePresignedUrl } from "../utils/s3-images.utils"
+import { generatePresignedPostUrl } from "../utils/s3-images.utils"
 import Room from "../models/room.models"
 
 // @desc Get a user by ID
@@ -98,24 +98,33 @@ export const deleteUser = asyncMiddleware(async (req: Request, res: Response) =>
 
 // @desc Get signedUrl for room images
 // @route   GET /api/v1/users/get-signed-url
-// @access  Authenticated user only
+// @access  Public only
 export const getPresignedUrlForUserAvatar = asyncMiddleware(async (req: Request, res: Response) => {
-  const { imageData } = req.body
+  const imageData = req.body.imageData
 
-  // Ensure imageData is provided
-  if (!imageData || imageData.length === 0) {
-    throw new CustomErrorHandler(400, "No image data provided")
+  // Validate the imageData input
+  if (!imageData || typeof imageData !== "object") {
+    throw new CustomErrorHandler(400, "Invalid image data provided")
   }
 
-  // Generate presigned URLs
-  const signedUrls = await generatePresignedUrl("user-avatar", imageData)
+  // Generate the presigned POST URL
+  const presignedData = await generatePresignedPostUrl("user-avatar", imageData)
 
-  // Extract base URLs by removing query parameters
-  const extractedBaseUrls = signedUrls?.split("?")[0]
+  if (!presignedData) {
+    throw new CustomErrorHandler(500, "Failed to generate presigned URL")
+  }
 
-  // Send the extracted base URLs and presigned URLs in the response
+  // Construct the final public image URL (after successful upload)
+  // const imageUrl = `https://s3.${process.env.AWS_CLOUD_BUCKET_NAME}.amazonaws.com/${process.env.AWS_CLOUD_REGION}/user-images/${presignedData.key}`
+
+  console.log("presignedData", presignedData.key)
+
+  const imageUrl = `https://s3.${process.env.AWS_CLOUD_REGION}.amazonaws.com/cityhom.com/${presignedData.key}`
+
+  // Send both the presigned POST data and the future image URL
   return res.json({
-    imageUrls: extractedBaseUrls,
-    imagePreSignedUrls: signedUrls,
+    imageUrl,
+    imagePreSignedData: presignedData,
   })
 })
+
