@@ -85,7 +85,7 @@ export const generatePresignedPostUrls = async (folderName: string, fileData: Fi
     const validResults = presignedPostsResults.filter((result): result is PresignedPostData => result !== null)
     const fileUrls = validResults.map(result => {
       // Format public URL from the key
-      return `https://s3.${process.env.AWS_CLOUD_REGION}.amazonaws.com/${BUCKET_NAME}/${folderName}/${result.key}`
+      return `https://s3.${process.env.AWS_CLOUD_REGION}.amazonaws.com/${BUCKET_NAME}/${result.key}`
     })
 
     // "https://s3.ap-south-1.amazonaws.com/fms.live/room_images/0b42ec34-beac-41e6-8ee3-97bde9d5edc32025-04-19T09-12-09.088Z.jpeg"
