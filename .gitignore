@@ -27,5 +27,6 @@ node_modules
 .history
 .serverless_nextjs
 coverage
+serverless.yaml
 
 
