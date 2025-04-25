@@ -19,7 +19,7 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# Serverless directories        
+# Serverless directories 
 .serverless
 .build
 .webpack

@@ -45,6 +45,7 @@ export interface IApartment extends Document {
   furnish: FURNISH_STATUS
   floor: number
   isAvailable: boolean
+  isExclusive: boolean
 }
 
 export interface ApartmentDocument extends IApartment, Document {}
@@ -86,6 +87,7 @@ const apartmentSchema = new Schema<ApartmentDocument>(
     furnish: { type: String, required: true, lowercase: true, trim: true },
     floor: { type: Number, default: 0 },
     isAvailable: { type: Boolean, default: true },
+    isExclusive: { type: Boolean, default: false },
   },
   { timestamps: true },
 )
