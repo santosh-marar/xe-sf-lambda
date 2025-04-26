@@ -91,7 +91,7 @@ export const getLandById = asyncMiddleware(async (req: Request, res: Response) =
   if (!land) {
     return res.status(404).json({ success: false, message: "Land not found" })
   }
-  return res.status(200).json({ success: true, message:"Land found successfully", data: land })
+  return res.status(200).json({ success: true, message: "Land found successfully", data: land })
 })
 
 export const updateLand = asyncMiddleware(async (req: Request, res: Response) => {
@@ -105,7 +105,7 @@ export const updateLand = asyncMiddleware(async (req: Request, res: Response) =>
     throw new CustomErrorHandler(404, "Room not found")
   }
 
-   // Check if the user is an admin or the owner of the address
+  // Check if the user is an admin or the owner of the address
   const isAdmin = req.user?.roles?.includes(USER_ROLES.ADMIN)
   const isOwner = foundLand.userId.toString() === req.user?._id.toString()
   if (!isAdmin && !isOwner) {

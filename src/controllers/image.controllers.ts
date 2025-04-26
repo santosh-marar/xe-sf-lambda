@@ -5,7 +5,7 @@ import asyncMiddleware from "../middlewares/async.middlewares"
 import { imageBatchDeleteSchema, imageDeleteSchema, imageValidation } from "../validators/image.validators"
 import { initializeS3Client } from "../configs/s3.configs"
 
-const s3Client= initializeS3Client()
+const s3Client = initializeS3Client()
 
 export const uploadImage = asyncMiddleware(async (req: Request, res: Response) => {
   const validationResult = imageValidation.safeParse(req.body)

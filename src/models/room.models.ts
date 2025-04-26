@@ -9,7 +9,7 @@ export enum SPACE_CATEGORIES {
   LAND = "land",
 }
 
-export enum SPACE_TYPES{
+export enum SPACE_TYPES {
   COMMERCIAL = "commercial",
   RESIDENTIAL = "residential",
   "SEMI-RESIDENTIAL" = "semi-residential",
@@ -21,7 +21,7 @@ export enum GENDER_PREFERENCE {
   GIRLS_ONLY = "girlsOnly",
   FOR_ALL = "forAll",
   BOYS_ONLY = "boysOnly",
-  FAMILY_ONLY= "familyOnly",
+  FAMILY_ONLY = "familyOnly",
   FAMILY_AND_GIRLS_ONLY = "familyAndGirlsOnly",
   WORKING_PROFESSIONAL_AND_GIRLS_AND_FAMILY_ONLY = "workingProfessionalAndGirlsAndFamilyOnly",
 }
@@ -75,7 +75,12 @@ export interface RoomDocument extends IRoom, Document {}
 const roomSchema = new Schema<RoomDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    spaceCategories: { type: String, enum: Object.values(SPACE_CATEGORIES), default: SPACE_CATEGORIES.ROOM, required: true },
+    spaceCategories: {
+      type: String,
+      enum: Object.values(SPACE_CATEGORIES),
+      default: SPACE_CATEGORIES.ROOM,
+      required: true,
+    },
     country: { type: String, enum: Object.values(COUNTRY), default: COUNTRY.NEPAL, lowercase: true, trim: true },
     district: { type: String, required: true, lowercase: true, trim: true },
     city: { type: String, required: true, lowercase: true, trim: true },

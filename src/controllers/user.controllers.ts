@@ -127,4 +127,3 @@ export const getPresignedUrlForUserAvatar = asyncMiddleware(async (req: Request,
     imagePreSignedData: presignedData,
   })
 })
-

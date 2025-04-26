@@ -1,11 +1,5 @@
 import express from "express"
-import {
-  createLand,
-  deleteLand,
-  getAllLands,
-  getLandById,
-  updateLand,
-} from "../controllers/land.controllers"
+import { createLand, deleteLand, getAllLands, getLandById, updateLand } from "../controllers/land.controllers"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 
 const router = express.Router()

@@ -305,7 +305,7 @@ const houseSchema = new Schema<IHouse>(
       drainage: {
         type: Boolean,
         default: false,
-      },      
+      },
       jacuzzi: {
         type: Boolean,
         default: false,

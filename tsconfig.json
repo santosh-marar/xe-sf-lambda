@@ -1,26 +1,20 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "outDir": "build",
-        "rootDir": "src",
-        "target": "es2020",
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "experimentalDecorators": true,
-        "esModuleInterop": true,
-        "pretty": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitReturns": true,
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true
-    },
-    "include": [
-        "src/**/*",
-        "eslint.config.mjs"
-    ],
-    "exclude": [
-        "node_modules",
-        "build"
-    ]
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "target": "es2020",
+    "module": "ES6",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "pretty": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "eslint.config.mjs"],
+  "exclude": ["node_modules", "build"]
 }

@@ -48,7 +48,6 @@ export interface ILand extends Document {
 
 export interface LandDocument extends ILand, Document {}
 
-
 const landSchema = new Schema<ILand>(
   {
     userId: {

@@ -41,11 +41,14 @@ export const generateUniqueFileName = (folderName: string, fileType: string): st
 }
 
 // Generate a presigned POST URL for a single file
-export const generatePresignedPostUrl = async (folderName: string, fileData: FileData): Promise<PresignedPostData | null> => {
+export const generatePresignedPostUrl = async (
+  folderName: string,
+  fileData: FileData,
+): Promise<PresignedPostData | null> => {
   try {
     uploadFileSchema.parse(fileData)
     const uniqueFileName = generateUniqueFileName(folderName, fileData.fileType)
-    
+
     const { url, fields } = await createPresignedPost(s3Client, {
       Bucket: BUCKET_NAME,
       Key: uniqueFileName,
@@ -62,7 +65,7 @@ export const generatePresignedPostUrl = async (folderName: string, fileData: Fil
     return {
       url,
       fields,
-      key: uniqueFileName
+      key: uniqueFileName,
     }
   } catch (error) {
     handleError(error, "generatePresignedPost")
@@ -71,7 +74,10 @@ export const generatePresignedPostUrl = async (folderName: string, fileData: Fil
 }
 
 // Generate multiple presigned POST URLs
-export const generatePresignedPostUrls = async (folderName: string, fileData: FileData[]): Promise<{ presignedPosts: PresignedPostData[], fileUrls: string[] }> => {
+export const generatePresignedPostUrls = async (
+  folderName: string,
+  fileData: FileData[],
+): Promise<{ presignedPosts: PresignedPostData[]; fileUrls: string[] }> => {
   if (fileData.length > MAX_FILE_UPLOAD) {
     console.error(`Exceeded max upload limit of ${MAX_FILE_UPLOAD}`)
     return { presignedPosts: [], fileUrls: [] }
@@ -80,27 +86,25 @@ export const generatePresignedPostUrls = async (folderName: string, fileData: Fi
   try {
     const presignedPostsPromises = fileData.map((file) => generatePresignedPostUrl(folderName, file))
     const presignedPostsResults = await Promise.all(presignedPostsPromises)
-    
+
     // Filter out null values and create public URLs
     const validResults = presignedPostsResults.filter((result): result is PresignedPostData => result !== null)
-    const fileUrls = validResults.map(result => {
+    const fileUrls = validResults.map((result) => {
       // Format public URL from the key
       return `https://s3.${process.env.AWS_CLOUD_REGION}.amazonaws.com/${BUCKET_NAME}/${result.key}`
     })
 
     // "https://s3.ap-south-1.amazonaws.com/fms.live/room_images/0b42ec34-beac-41e6-8ee3-97bde9d5edc32025-04-19T09-12-09.088Z.jpeg"
 
-
-    return { 
+    return {
       presignedPosts: validResults,
-      fileUrls
+      fileUrls,
     }
   } catch (error) {
     handleError(error, "generatePresignedPosts")
     return { presignedPosts: [], fileUrls: [] }
   }
 }
-
 
 // Delete a single file
 export const deleteFile = async (url: string): Promise<void> => {

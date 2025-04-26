@@ -28,24 +28,25 @@ const allowedOrigins = [
   "https://www.cityhom.com",
 ].filter(Boolean) // Remove any undefined values
 
-
 // Move this before defining any routes
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true)
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true)
-    }
-    const msg = `The CORS policy for this site does not allow access from ${origin}`
-    return callback(new Error(msg), false)
-  },
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true)
+      }
+      const msg = `The CORS policy for this site does not allow access from ${origin}`
+      return callback(new Error(msg), false)
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  }),
+)
 
 // app.options("*", cors());
 // app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images

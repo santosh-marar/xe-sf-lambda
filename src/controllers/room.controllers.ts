@@ -199,11 +199,7 @@ export const getPresignedUrls = asyncMiddleware(async (req: Request, res: Respon
     presignedPosts,
     fileUrls,
   })
-
 })
-
-
-
 
 // @desc Get my rooms
 // @route   GET /api/v1/rooms/my-rooms
@@ -242,19 +238,19 @@ export const getMyAllRooms = asyncMiddleware(async (req: Request, res: Response)
 // @route   GET /api/v1/spaces/search
 // @access  Public
 export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => {
- const {
-   spaceCategories,
-   locationQuery,
-   minFare = 0,
-   maxFare = Number.MAX_SAFE_INTEGER,
-   genderPreference,
-   isSpaceProviderLiving,
-   sortBy = "createdAt",
-   sortOrder = "desc",
-   minBedrooms,
-   limit = 10,
-   page = 1,
- } = req.query
+  const {
+    spaceCategories,
+    locationQuery,
+    minFare = 0,
+    maxFare = Number.MAX_SAFE_INTEGER,
+    genderPreference,
+    isSpaceProviderLiving,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+    minBedrooms,
+    limit = 10,
+    page = 1,
+  } = req.query
 
   let sortOption: any
   switch (sortBy) {
@@ -267,19 +263,17 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
       break
   }
 
-const matchStage: any = {
-  fare: {
-    $gte: parseInt(minFare as string, 10),
-    $lte: parseInt(maxFare as string, 10),
-  },
-  ...(req.query.isAvailable !== undefined && {
-    isAvailable: req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : null,
-  }),
-  ...(genderPreference && { genderPreference }),
-  ...(isSpaceProviderLiving !== undefined && { isSpaceProviderLiving: isSpaceProviderLiving === "true" }),
-}
-
-
+  const matchStage: any = {
+    fare: {
+      $gte: parseInt(minFare as string, 10),
+      $lte: parseInt(maxFare as string, 10),
+    },
+    ...(req.query.isAvailable !== undefined && {
+      isAvailable: req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : null,
+    }),
+    ...(genderPreference && { genderPreference }),
+    ...(isSpaceProviderLiving !== undefined && { isSpaceProviderLiving: isSpaceProviderLiving === "true" }),
+  }
 
   if (locationQuery) {
     matchStage.$or = [
@@ -391,8 +385,8 @@ const matchStage: any = {
   })
 })
 
-/** 
+/**
  * @desc Get all newly created spaces with filters and pagination
  * @route   GET /api/v1/spaces/new
  * @access  Public
-*/
+ */

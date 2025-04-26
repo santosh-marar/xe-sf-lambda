@@ -30,6 +30,7 @@
     "express-rate-limit": "7.4.1",
     "husky": "9.1.5",
     "jsonwebtoken": "9.0.2",
+    "lint-staged": "15.5.1",
     "mongoose": "8.5.4",
     "mongoose-aggregate-paginate-v2": "1.1.2",
     "mongoose-paginate-v2": "1.8.5",
@@ -75,6 +76,15 @@
     "node": ">=20.17.0",
     "yarn": ">=1.20.0",
     "npm": "please-use-yarn"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

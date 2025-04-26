@@ -54,7 +54,12 @@ export interface ApartmentDocument extends IApartment, Document {}
 const apartmentSchema = new Schema<ApartmentDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    spaceCategories: { type: String, enum: Object.values(SPACE_CATEGORIES), default: SPACE_CATEGORIES.APARTMENT, required: true },
+    spaceCategories: {
+      type: String,
+      enum: Object.values(SPACE_CATEGORIES),
+      default: SPACE_CATEGORIES.APARTMENT,
+      required: true,
+    },
     country: { type: String, required: true, lowercase: true, trim: true, default: COUNTRY.NEPAL },
     district: { type: String, lowercase: true, trim: true },
     city: { type: String, required: true, lowercase: true, trim: true },

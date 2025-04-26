@@ -219,16 +219,16 @@ export const getMyAllApartments = asyncMiddleware(async (req: Request, res: Resp
 // @route   GET /api/v1/apartments/get-signed-url
 // @access  Authenticated user only
 export const getSignedUrlForApartmentImages = asyncMiddleware(async (req: Request, res: Response) => {
-   const { imageData } = req.body
+  const { imageData } = req.body
 
-   if (!imageData || !Array.isArray(imageData)) {
-     return res.status(400).json({ error: "Invalid image data" })
-   }
+  if (!imageData || !Array.isArray(imageData)) {
+    return res.status(400).json({ error: "Invalid image data" })
+  }
 
-   const { presignedPosts, fileUrls } = await generatePresignedPostUrls("apartment-images", imageData)
+  const { presignedPosts, fileUrls } = await generatePresignedPostUrls("apartment-images", imageData)
 
-   return res.status(200).json({
-     presignedPosts,
-     fileUrls
-   })
+  return res.status(200).json({
+    presignedPosts,
+    fileUrls,
+  })
 })
