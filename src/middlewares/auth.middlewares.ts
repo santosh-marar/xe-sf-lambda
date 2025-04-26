@@ -27,35 +27,6 @@ declare module "express-serve-static-core" {
 }
 
 // Middleware to check if the user is authenticated
-// const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-//   const authHeader = req.headers.authorization || req.headers.Authorization
-
-//   if (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
-//     const token = authHeader.split(" ")[1]
-
-//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err, decoded: any) => {
-//       if (err) {
-//         console.error(err)
-//         if (err.name === "TokenExpiredError") {
-//           return res.status(401).json({ message: "Unauthorized: Token expired" })
-//         }
-//         return res.status(403).json({ message: "Forbidden: Invalid token" })
-//       }
-
-//       const decodedToken = decoded as DecodedToken
-//       req.user = {
-//         _id: decodedToken.user_id,
-//         roles: decodedToken.roles,
-//       }
-
-//       next()
-//     })
-//   } else {
-//     return res.status(401).json({ message: "Unauthorized: Missing or invalid token" })
-//   }
-// }
-
-// isAuthenticated Middleware
 const isAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization || req.headers.Authorization
 

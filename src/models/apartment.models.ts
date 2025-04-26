@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, PaginateModel } from "mongoose"
 import mongoosePaginate from "mongoose-paginate-v2"
-import { COUNTRY, GENDER_PREFERENCE, LISTING_TYPE, SPACE_TYPES } from "./room.models"
+import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE, SPACE_CATEGORIES } from "./room.models"
 
 export enum FURNISH_STATUS {
   FULL = "full",
@@ -12,7 +12,7 @@ export enum FURNISH_STATUS {
 // IApartment Interface
 export interface IApartment extends Document {
   userId: mongoose.Types.ObjectId
-  spaceType: SPACE_TYPES
+  spaceCategories: SPACE_CATEGORIES
   country: string
   district: string
   city: string
@@ -37,7 +37,7 @@ export interface IApartment extends Document {
   phoneNumber: number
   fare: number
   nearPopularPlace: string
-  listingType: LISTING_TYPE
+  listingType: LISTING_PURPOSE
   noOfBedrooms: number
   noOfBathrooms: number
   noOfKitchens: number
@@ -54,7 +54,7 @@ export interface ApartmentDocument extends IApartment, Document {}
 const apartmentSchema = new Schema<ApartmentDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    spaceType: { type: String, enum: Object.values(SPACE_TYPES), default: SPACE_TYPES.APARTMENT, required: true },
+    spaceCategories: { type: String, enum: Object.values(SPACE_CATEGORIES), default: SPACE_CATEGORIES.APARTMENT, required: true },
     country: { type: String, required: true, lowercase: true, trim: true, default: COUNTRY.NEPAL },
     district: { type: String, lowercase: true, trim: true },
     city: { type: String, required: true, lowercase: true, trim: true },

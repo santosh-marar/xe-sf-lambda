@@ -14,11 +14,11 @@ import { limiter } from "./utils/rate.limit.utils"
 import searchRoutes from "./routes/search.routes"
 import adminRoutes from "./routes/admin.routes"
 import imageRoutes from "./routes/image.routes"
+import landRoutes from "./routes/land.routes"
 
 const app: Application = express()
 
-// // Middleware
-// app.use(express.json())
+// Middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:3000",
@@ -28,29 +28,6 @@ const allowedOrigins = [
   "https://www.cityhom.com",
 ].filter(Boolean) // Remove any undefined values
 
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       // Allow requests with no origin (like mobile apps or curl requests)
-//       if (!origin) return callback(null, true)
-
-//       if (allowedOrigins.includes(origin)) {
-//         return callback(null, true)
-//       }
-
-//       const msg = `The CORS policy for this site does not allow access from ${origin}`
-//       return callback(new Error(msg), false)
-//     },
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//     credentials: true,
-//     preflightContinue: false,
-//     optionsSuccessStatus: 204,
-//   }),
-// )
-
-// // Handle preflight requests
-// app.options("*", cors())
 
 // Move this before defining any routes
 app.use(cors({
@@ -70,10 +47,10 @@ app.use(cors({
   optionsSuccessStatus: 204,
 }));
 
-app.options("*", cors());
-app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images
+// app.options("*", cors());
+// app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images
 
-// app.use(cors())
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser() as express.RequestHandler)
 app.use(limiter)
@@ -92,6 +69,7 @@ app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/addresses", addressRoutes)
 app.use("/api/v1/rooms", roomRoutes)
 app.use("/api/v1/apartments", apartmentRoutes)
+app.use("/api/v1/lands", landRoutes)
 app.use("/api/v1/spaces", searchRoutes)
 app.use("/api/v1/admin", adminRoutes)
 app.use("/api/v1/images", imageRoutes)

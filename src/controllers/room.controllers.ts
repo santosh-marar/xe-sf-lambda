@@ -36,7 +36,7 @@ export const createRoom = asyncMiddleware(async (req: Request, res: Response) =>
 // @desc    Get all rooms
 // @route   GET /api/v1/rooms
 // @access  Public
-export const getAllRooms = asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+export const getAllRooms = asyncMiddleware(async (req: Request, res: Response) => {
   const {
     page = 1,
     limit = 10,
@@ -243,7 +243,7 @@ export const getMyAllRooms = asyncMiddleware(async (req: Request, res: Response)
 // @access  Public
 export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => {
  const {
-   spaceType,
+   spaceCategories,
    locationQuery,
    minFare = 0,
    maxFare = Number.MAX_SAFE_INTEGER,
@@ -288,9 +288,9 @@ const matchStage: any = {
     ]
   }
 
-  // Add spaceType filter if provided
-  if (spaceType) {
-    matchStage.spaceType = spaceType
+  // Add spaceCategories filter if provided
+  if (spaceCategories) {
+    matchStage.spaceCategories = spaceCategories
   }
 
   const apartmentMatch = {
@@ -304,7 +304,7 @@ const matchStage: any = {
     { $sort: sortOption },
     {
       $project: {
-        spaceType: "apartment",
+        spaceCategories: "apartment",
         city: 1,
         chowk: 1,
         fare: 1,
@@ -324,7 +324,7 @@ const matchStage: any = {
     { $sort: sortOption },
     {
       $project: {
-        spaceType: "room",
+        spaceCategories: "room",
         city: 1,
         chowk: 1,
         fare: 1,
@@ -344,7 +344,7 @@ const matchStage: any = {
   //   { $sort: sortOption },
   //   {
   //     $project: {
-  //       spaceType: "land",
+  //       spaceCategories: "land",
   //       city: 1,
   //       chowk: 1,
   //       fare: 1,
@@ -392,7 +392,7 @@ const matchStage: any = {
 })
 
 /** 
- * 
+ * @desc Get all newly created spaces with filters and pagination
+ * @route   GET /api/v1/spaces/new
+ * @access  Public
 */
-
-

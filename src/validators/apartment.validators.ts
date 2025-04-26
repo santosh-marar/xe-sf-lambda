@@ -1,6 +1,6 @@
 import { z } from "zod"
 import mongoose from "mongoose"
-import { COUNTRY, GENDER_PREFERENCE, LISTING_TYPE } from "../models/room.models"
+import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE } from "../models/room.models"
 
 // Zod schema for Apartment validation
 export const apartmentZodSchema = z.object({
@@ -40,7 +40,7 @@ export const apartmentZodSchema = z.object({
   nearPopularPlace: z.string().transform((val) => val.toLowerCase().trim()),
   listingType: z
     .string()
-    .default(LISTING_TYPE.RENT)
+    .default(LISTING_PURPOSE.RENT)
     .transform((val) => val.toLowerCase().trim()),
   noOfBedrooms: z.number().min(1, { message: "Must have at least one bedroom" }),
   noOfBathrooms: z.number().min(0).default(0),

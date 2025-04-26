@@ -1,6 +1,6 @@
 import { z } from "zod"
 import mongoose from "mongoose"
-import { COUNTRY, GENDER_PREFERENCE, LISTING_TYPE } from "../models/room.models"
+import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE } from "../models/room.models"
 
 // Facility schema
 const facilitySchema = z.object({
@@ -34,7 +34,7 @@ export const roomCreateSchemaValidation = z.object({
   phoneNumber: z.number().min(10, "Phone number must be 10 digits"),
   fare: z.number().min(0, "Fare must be non-negative"),
   nearPopularPlace: z.string().trim().toLowerCase().min(1, "Near popular place name is required"),
-  listingType: z.nativeEnum(LISTING_TYPE).default(LISTING_TYPE.RENT),
+  listingType: z.nativeEnum(LISTING_PURPOSE).default(LISTING_PURPOSE.RENT),
   isAvailable: z.boolean().default(true),
 })
 

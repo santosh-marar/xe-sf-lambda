@@ -1,12 +1,19 @@
 import mongoose, { Document, Schema, PaginateModel } from "mongoose"
 import mongoosePaginate from "mongoose-paginate-v2"
 
-export enum SPACE_TYPES {
+export enum SPACE_CATEGORIES {
   ROOM = "room",
   APARTMENT = "apartment",
   HOUSE = "house",
   FLAT = "flat",
   LAND = "land",
+}
+
+export enum SPACE_TYPES{
+  COMMERCIAL = "commercial",
+  RESIDENTIAL = "residential",
+  "SEMI-RESIDENTIAL" = "semi-residential",
+  "MIXED-USE" = "mixed-use",
 }
 
 // Enums
@@ -24,7 +31,7 @@ export enum COUNTRY {
   INDIA = "india",
 }
 
-export enum LISTING_TYPE {
+export enum LISTING_PURPOSE {
   RENT = "rent",
   SALE = "sale",
 }
@@ -32,7 +39,7 @@ export enum LISTING_TYPE {
 // IRoom Interface
 export interface IRoom extends Document {
   userId: mongoose.Types.ObjectId
-  spaceType: SPACE_TYPES
+  spaceCategories: SPACE_CATEGORIES
   country: COUNTRY
   district: string
   city: string
@@ -57,7 +64,7 @@ export interface IRoom extends Document {
   phoneNumber: number
   fare: number
   nearPopularPlace: string
-  listingType: LISTING_TYPE
+  listingType: LISTING_PURPOSE
   isAvailable?: boolean
   isExclusive?: boolean
 }
@@ -68,7 +75,7 @@ export interface RoomDocument extends IRoom, Document {}
 const roomSchema = new Schema<RoomDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    spaceType: { type: String, enum: Object.values(SPACE_TYPES), default: SPACE_TYPES.ROOM, required: true },
+    spaceCategories: { type: String, enum: Object.values(SPACE_CATEGORIES), default: SPACE_CATEGORIES.ROOM, required: true },
     country: { type: String, enum: Object.values(COUNTRY), default: COUNTRY.NEPAL, lowercase: true, trim: true },
     district: { type: String, required: true, lowercase: true, trim: true },
     city: { type: String, required: true, lowercase: true, trim: true },
@@ -93,7 +100,7 @@ const roomSchema = new Schema<RoomDocument>(
     phoneNumber: { type: Number, required: true },
     fare: { type: Number, required: true, min: 0 },
     nearPopularPlace: { type: String, required: true, lowercase: true, trim: true },
-    listingType: { type: String, enum: Object.values(LISTING_TYPE), default: LISTING_TYPE.RENT, required: true },
+    listingType: { type: String, enum: Object.values(LISTING_PURPOSE), default: LISTING_PURPOSE.RENT, required: true },
     isAvailable: { type: Boolean, default: true },
     isExclusive: { type: Boolean, default: false },
   },
