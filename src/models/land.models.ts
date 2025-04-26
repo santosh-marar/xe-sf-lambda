@@ -6,12 +6,12 @@ export interface ILand extends Document {
   userId: mongoose.Types.ObjectId
   title: string
   country: string
-  description: string
+  descriptionOfSpace: string
   spaceImagesUrl: string[]
   videoUrl: string
   listingType: LISTING_PURPOSE
   spaceType: SPACE_TYPES
-  spaceCategory: SPACE_CATEGORIES
+  spaceCategories: SPACE_CATEGORIES
   city: string
   chowk: string
   municipality: string
@@ -40,8 +40,8 @@ export interface ILand extends Document {
     busStation: string
     cinemaHall: string
   }
-  price: number
-  isPriceNegotiable: boolean
+  fare: number
+  isFareNegotiable: boolean
   isAvailable: boolean
   isExclusive: boolean
 }
@@ -67,7 +67,7 @@ const landSchema = new Schema<ILand>(
       lowercase: true,
       trim: true,
     },
-    description: {
+    descriptionOfSpace: {
       type: String,
       required: true,
       lowercase: true,
@@ -90,7 +90,7 @@ const landSchema = new Schema<ILand>(
       default: SPACE_TYPES.COMMERCIAL,
       required: true,
     },
-    spaceCategory: {
+    spaceCategories: {
       type: String,
       enum: Object.values(SPACE_CATEGORIES),
       default: SPACE_CATEGORIES.LAND,
@@ -232,12 +232,12 @@ const landSchema = new Schema<ILand>(
         trim: true,
       },
     },
-    price: {
+    fare: {
       type: Number,
       min: 0,
       required: true,
     },
-    isPriceNegotiable: {
+    isFareNegotiable: {
       type: Boolean,
       required: true,
     },
@@ -257,7 +257,7 @@ const landSchema = new Schema<ILand>(
 
 landSchema.index({ city: 1 })
 landSchema.index({ chowk: "text" })
-landSchema.index({ price: 1 })
+landSchema.index({ fare: 1 })
 landSchema.index({ isAvailable: 1, isActive: 1 })
 
 // Apply pagination plugin

@@ -41,13 +41,11 @@ export const getAllApartments = asyncMiddleware(async (req: Request, res: Respon
     limit = 10,
     fareMin,
     fareMax,
-    city,
     isAvailable,
     isActive,
     genderPreference,
     listingType,
-    nearPopularPlaceName,
-    chowk,
+    locationQuery,
     sortBy = "createdAt",
     sortOrder = "desc",
   } = req.query
@@ -60,9 +58,13 @@ export const getAllApartments = asyncMiddleware(async (req: Request, res: Respon
   if (fareMax) filters.fare = { ...filters.fare, $lte: Number(fareMax) }
 
   // Partial match filters
-  if (city) filters.city = { $regex: city as string, $options: "i" }
-  if (chowk) filters.chowk = { $regex: chowk as string, $options: "i" }
-  if (nearPopularPlaceName) filters.nearPopularPlaceName = { $regex: nearPopularPlaceName as string, $options: "i" }
+  if (locationQuery) {
+    filters.$or = [
+      { city: { $regex: locationQuery as string, $options: "i" } },
+      { chowk: { $regex: locationQuery as string, $options: "i" } },
+      { nearPopularPlaceName: { $regex: locationQuery as string, $options: "i" } },
+    ]
+  }
 
   // Other filters
   if (isAvailable) filters.isAvailable = isAvailable === "true"

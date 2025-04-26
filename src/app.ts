@@ -15,6 +15,7 @@ import searchRoutes from "./routes/search.routes"
 import adminRoutes from "./routes/admin.routes"
 import imageRoutes from "./routes/image.routes"
 import landRoutes from "./routes/land.routes"
+import houseRoutes from "./routes/house.routes"
 
 const app: Application = express()
 
@@ -71,6 +72,7 @@ app.use("/api/v1/addresses", addressRoutes)
 app.use("/api/v1/rooms", roomRoutes)
 app.use("/api/v1/apartments", apartmentRoutes)
 app.use("/api/v1/lands", landRoutes)
+app.use("/api/v1/houses", houseRoutes)
 app.use("/api/v1/spaces", searchRoutes)
 app.use("/api/v1/admin", adminRoutes)
 app.use("/api/v1/images", imageRoutes)

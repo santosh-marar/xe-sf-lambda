@@ -9,6 +9,7 @@ import {
 } from "../validators/land.validators"
 import CustomErrorHandler from "../utils/error.utils"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
+import { deleteMultipleFiles, generatePresignedPostUrls } from "../utils/s3-images.utils"
 
 export const createLand = asyncMiddleware(async (req: Request, res: Response) => {
   const userId = req?.user?._id
@@ -28,7 +29,7 @@ export const createLand = asyncMiddleware(async (req: Request, res: Response) =>
   })
 })
 
-const allowedSortBy = ["price", "createdAt"] as const
+const allowedSortBy = ["fare", "createdAt"] as const
 const allowedSortOrder = ["asc", "desc"] as const
 
 type SortByType = (typeof allowedSortBy)[number]
@@ -38,28 +39,30 @@ export const getAllLands = asyncMiddleware(async (req: Request, res: Response) =
   const {
     page = 1,
     limit = 10,
-    minPrice,
-    maxPrice,
+    minFare,
+    maxFare,
     isAvailable,
     listingType,
-    city,
-    chowk,
-    municipality,
+    locationQuery,
     sortBy = "createdAt",
     sortOrder = "desc",
   } = req.query as Record<string, any>
 
   const filters: Record<string, any> = {}
 
-  if (minPrice) filters.price = { $gte: Number(minPrice) }
-  if (maxPrice) filters.price = { ...filters.price, $lte: Number(maxPrice) }
-
-  if (city) filters.city = { $regex: city, $options: "i" }
-  if (chowk) filters.chowk = { $regex: chowk, $options: "i" }
-  if (municipality) filters.municipality = { $regex: municipality, $options: "i" }
+  if (minFare) filters.fare = { $gte: Number(minFare) }
+  if (maxFare) filters.fare = { ...filters.fare, $lte: Number(maxFare) }
 
   if (typeof isAvailable !== "undefined") filters.isAvailable = isAvailable === "true"
   if (listingType) filters.listingType = listingType
+
+  if (locationQuery) {
+    filters.$or = [
+      { city: { $regex: locationQuery, $options: "i" } },
+      { chowk: { $regex: locationQuery, $options: "i" } },
+      { municipality: { $regex: locationQuery, $options: "i" } },
+    ]
+  }
 
   // Validate sortBy and sortOrder
   const finalSortBy: SortByType = allowedSortBy.includes(sortBy) ? sortBy : "createdAt"
@@ -92,6 +95,36 @@ export const getLandById = asyncMiddleware(async (req: Request, res: Response) =
     return res.status(404).json({ success: false, message: "Land not found" })
   }
   return res.status(200).json({ success: true, message: "Land found successfully", data: land })
+})
+
+export const getMyLands = asyncMiddleware(async (req: Request, res: Response) => {
+  const user = req.user
+  const userId = user?._id
+
+  if (!userId) throw new CustomErrorHandler(400, "User not found")
+
+  // Get pagination parameters from query, with defaults
+  const page = parseInt(req.query.page as string) || 1
+  const limit = parseInt(req.query.limit as string) || 15
+
+  const options = {
+    page,
+    limit,
+    // select: "-sensitiveField", // Replace 'sensitiveField' with fields to exclude
+    lean: true, // Use lean for performance
+  }
+
+  const result = await Land.paginate({ userId }, options)
+
+  if (!result || result.docs.length === 0) {
+    throw new CustomErrorHandler(404, "Lands not found")
+  }
+
+  res.json({
+    success: true,
+    message: "Found my lands successfully",
+    data: result,
+  })
 })
 
 export const updateLand = asyncMiddleware(async (req: Request, res: Response) => {
@@ -133,10 +166,30 @@ export const deleteLand = asyncMiddleware(async (req: Request, res: Response) =>
     throw new CustomErrorHandler(403, "Forbidden: Insufficient permissions")
   }
 
+  // Ensure image is deleted
+  if (foundLand?.spaceImagesUrl && foundLand?.spaceImagesUrl.length > 0) {
+    const deleteImage = await deleteMultipleFiles(foundLand?.spaceImagesUrl)
+  }
+
   const deletedLand = await Land.findByIdAndDelete(req.params.id)
   if (!deletedLand) {
     throw new CustomErrorHandler(404, "Land not found")
   }
 
   return res.status(200).json({ success: true, message: "Land deleted successfully" })
+})
+
+export const getPresignedPostUrls = asyncMiddleware(async (req: Request, res: Response) => {
+  const { imageData } = req.body
+
+  if (!imageData || !Array.isArray(imageData)) {
+    return res.status(400).json({ error: "Invalid image data" })
+  }
+
+  const { presignedPosts, fileUrls } = await generatePresignedPostUrls("room-images", imageData)
+
+  return res.status(200).json({
+    presignedPosts,
+    fileUrls,
+  })
 })

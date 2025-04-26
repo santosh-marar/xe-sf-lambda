@@ -11,6 +11,8 @@ import {
 import { USER_ROLES } from "../middlewares/auth.middlewares"
 import Apartment from "../models/apartment.models"
 import { deleteMultipleFiles, generatePresignedPostUrls } from "../utils/s3-images.utils"
+import Land from "../models/land.models"
+import House from "../models/house.models"
 
 // @desc    Create a new room
 // @route   POST /api/v1/rooms
@@ -42,13 +44,11 @@ export const getAllRooms = asyncMiddleware(async (req: Request, res: Response) =
     limit = 10,
     fareMin,
     fareMax,
-    city,
     isAvailable,
     isActive,
     genderPreference,
     listingType,
-    nearPopularPlaceName,
-    chowk,
+    locationQuery,
     sortBy = "createdAt",
     sortOrder = "desc",
   } = req.query
@@ -60,10 +60,13 @@ export const getAllRooms = asyncMiddleware(async (req: Request, res: Response) =
   if (fareMin) filters.fare = { $gte: Number(fareMin) }
   if (fareMax) filters.fare = { ...filters.fare, $lte: Number(fareMax) }
 
-  // Partial match filters
-  if (city) filters.city = { $regex: city as string, $options: "i" }
-  if (chowk) filters.chowk = { $regex: chowk as string, $options: "i" }
-  if (nearPopularPlaceName) filters.nearPopularPlaceName = { $regex: nearPopularPlaceName as string, $options: "i" }
+  if (locationQuery) {
+    filters.$or = [
+      { city: { $regex: locationQuery as string, $options: "i" } },
+      { chowk: { $regex: locationQuery as string, $options: "i" } },
+      { nearPopularPlaceName: { $regex: locationQuery as string, $options: "i" } },
+    ]
+  }
 
   // Other filters
   if (isAvailable) filters.isAvailable = isAvailable === "true"
@@ -333,30 +336,50 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
     },
   ])
 
-  // const landResults = Land.aggregate([
-  //   { $match: matchStage },
-  //   { $sort: sortOption },
-  //   {
-  //     $project: {
-  //       spaceCategories: "land",
-  //       city: 1,
-  //       chowk: 1,
-  //       fare: 1,
-  //       facility: 1,
-  //       description: 1,
-  //       createdAt: 1,
-  //       genderPreference: 1,
-  //       isSpaceProviderLiving: 1,
-  //     },
-  //   },
-  // ])
+  const landResults = Land.aggregate([
+    { $match: matchStage },
+    { $sort: sortOption },
+    {
+      $project: {
+        spaceCategories: "land",
+        title: 1,
+        city: 1,
+        chowk: 1,
+        fare: 1,
+        facility: 1,
+        descriptionOfSpace: 1,
+        createdAt: 1,
+      },
+    },
+  ])
+
+  const houseResults = House.aggregate([
+    { $match: matchStage },
+    { $sort: sortOption },
+    {
+      $project: {
+        spaceCategories: "land",
+        title: 1,
+        city: 1,
+        chowk: 1,
+        fare: 1,
+        facility: 1,
+        descriptionOfSpace: 1,
+        createdAt: 1,
+      },
+    },
+  ])
 
   // add lands
-  const [apartments, rooms] = await Promise.all([apartmentResults, roomResults])
+  const [apartments, rooms, lands, houses] = await Promise.all([
+    apartmentResults,
+    roomResults,
+    landResults,
+    houseResults,
+  ])
 
   // Combine the results from all property types
-  // add ...lands if you add land property
-  const combinedResults = [...apartments, ...rooms].sort((a, b) => {
+  const combinedResults = [...apartments, ...rooms, ...lands, ...houses].sort((a, b) => {
     return sortOption.fare
       ? sortOption.fare * (a.fare - b.fare)
       : sortOption.createdAt * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
@@ -390,3 +413,137 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
  * @route   GET /api/v1/spaces/new
  * @access  Public
  */
+export const recentlyCreatedSpaces = asyncMiddleware(async (req: Request, res: Response) => {
+  const {
+    page = 1,
+    limit = 5,
+    minFare,
+    maxFare,
+    isAvailable,
+    listingType,
+    locationQuery,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+  } = req.query
+
+  const pageNumber = Number(page)
+  const pageSize = Number(limit)
+
+  const matchStage: any = {}
+
+  if (minFare) matchStage.fare = { $gte: Number(minFare) }
+  if (maxFare) matchStage.fare = { ...matchStage.fare, $lte: Number(maxFare) }
+  if (typeof isAvailable !== "undefined") matchStage.isAvailable = isAvailable === "true"
+  if (listingType) matchStage.listingType = listingType
+
+  if (locationQuery) {
+    matchStage.$or = [
+      { city: { $regex: locationQuery, $options: "i" } },
+      { municipality: { $regex: locationQuery, $options: "i" } },
+      { chowk: { $regex: locationQuery, $options: "i" } },
+      { nearPopularPlace: { $regex: locationQuery, $options: "i" } },
+    ]
+  }
+
+  const sortField = String(sortBy) || "createdAt"
+  const sortDirection = sortOrder === "asc" ? 1 : -1
+  const sortStage: Record<string, 1 | -1> = { [sortField]: sortDirection }
+
+  const aggregationPipeline = [
+    {
+      $unionWith: {
+        coll: "apartments",
+        pipeline: [],
+      },
+    },
+    {
+      $unionWith: {
+        coll: "lands",
+        pipeline: [],
+      },
+    },
+    {
+      $unionWith: {
+        coll: "houses",
+        pipeline: [],
+      },
+    },
+    {
+      $match: matchStage,
+    },
+    {
+      $sort: sortStage,
+    },
+    {
+      $project: {
+        _id: 0,
+        id: "$_id",
+        // type: {
+        //   $switch: {
+        //     branches: [
+        //       { case: { $eq: ["$__t", "Room"] }, then: "room" },
+        //       { case: { $eq: ["$__t", "Apartment"] }, then: "apartment" },
+        //       { case: { $eq: ["$__t", "Land"] }, then: "land" },
+        //       { case: { $eq: ["$__t", "House"] }, then: "house" },
+        //     ],
+        //     default: "unknown",
+        //   },
+        // },
+        title: { $ifNull: ["$title", ""] },
+        descriptionOfSpace: { $ifNull: ["$descriptionOfSpace", ""] },
+        city: { $ifNull: ["$city", ""] },
+        municipality: { $ifNull: ["$municipality", ""] },
+        chowk: { $ifNull: ["$chowk", ""] },
+        nearPopularPlace: { $ifNull: ["$nearPopularPlace", ""] },
+        fare: { $ifNull: ["$fare", 0] },
+        createdAt: { $ifNull: ["$createdAt", new Date(0)] },
+        isAvailable: { $ifNull: ["$isAvailable", false] },
+        listingType: { $ifNull: ["$listingType", ""] },
+        spaceType: { $ifNull: ["$spaceType", ""] },
+        // spaceCategories: { $ifNull: ["$spaceCategories", ""] },
+        spaceImagesUrl: { $ifNull: ["$spaceImagesUrl", []] },
+      },
+    },
+  ]
+
+  const spaces = await Room.aggregate(aggregationPipeline)
+
+  if (!spaces.length) {
+    throw new CustomErrorHandler(404, "Spaces not found")
+  }
+
+  // Sorting and pagination
+  const total = spaces.length
+  const totalPages = Math.ceil(total / pageSize)
+  const hasNextPage = pageNumber < totalPages
+
+  const start = (pageNumber - 1) * pageSize
+  const paginatedSpaces = spaces.slice(start, start + pageSize)
+
+  // Filters
+  const cities = Array.from(new Set(spaces.map((p) => p.city).filter(Boolean)))
+  const fares = spaces.map((p) => p.fare).filter(Boolean)
+  const minFareValue = fares.length ? Math.min(...fares) : 0
+  const maxFareValue = fares.length ? Math.max(...fares) : 0
+  const spaceType = Array.from(new Set(spaces.map((p) => p.spaceType).filter(Boolean)))
+
+  return res.status(200).json({
+    spaces: paginatedSpaces,
+    pagination: {
+      total,
+      page: pageNumber,
+      pageSize,
+      totalPages,
+      hasNextPage,
+    },
+    filters: {
+      cities,
+      priceRange: {
+        min: minFareValue,
+        max: maxFareValue,
+      },
+      listingTypes: ["rent", "sale"],
+      spaceType,
+    },
+  })
+})

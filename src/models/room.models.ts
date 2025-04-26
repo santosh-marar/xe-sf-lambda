@@ -65,6 +65,7 @@ export interface IRoom extends Document {
   fare: number
   nearPopularPlace: string
   listingType: LISTING_PURPOSE
+  spaceType: SPACE_TYPES
   isAvailable?: boolean
   isExclusive?: boolean
 }
@@ -75,12 +76,6 @@ export interface RoomDocument extends IRoom, Document {}
 const roomSchema = new Schema<RoomDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    spaceCategories: {
-      type: String,
-      enum: Object.values(SPACE_CATEGORIES),
-      default: SPACE_CATEGORIES.ROOM,
-      required: true,
-    },
     country: { type: String, enum: Object.values(COUNTRY), default: COUNTRY.NEPAL, lowercase: true, trim: true },
     district: { type: String, required: true, lowercase: true, trim: true },
     city: { type: String, required: true, lowercase: true, trim: true },
@@ -105,7 +100,24 @@ const roomSchema = new Schema<RoomDocument>(
     phoneNumber: { type: Number, required: true },
     fare: { type: Number, required: true, min: 0 },
     nearPopularPlace: { type: String, required: true, lowercase: true, trim: true },
-    listingType: { type: String, enum: Object.values(LISTING_PURPOSE), default: LISTING_PURPOSE.RENT, required: true },
+    listingType: {
+      type: String,
+      enum: Object.values(LISTING_PURPOSE),
+      default: LISTING_PURPOSE.RENT,
+      required: true,
+    },
+    spaceType: {
+      type: String,
+      enum: Object.values(SPACE_TYPES),
+      default: SPACE_TYPES.COMMERCIAL,
+      required: true,
+    },
+    spaceCategories: {
+      type: String,
+      enum: Object.values(SPACE_CATEGORIES),
+      default: SPACE_CATEGORIES.LAND,
+      required: true,
+    },
     isAvailable: { type: Boolean, default: true },
     isExclusive: { type: Boolean, default: false },
   },

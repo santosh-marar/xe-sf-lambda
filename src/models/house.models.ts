@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose"
+import mongoose, { Document, PaginateModel, Schema } from "mongoose"
 import { LISTING_PURPOSE, SPACE_CATEGORIES, SPACE_TYPES, COUNTRY } from "./room.models"
 import { FURNISH_STATUS } from "./apartment.models"
 
@@ -6,12 +6,12 @@ export interface IHouse extends Document {
   userId: mongoose.Types.ObjectId
   country: string
   title: string
-  description: string
+  descriptionOfSpace: string
   spaceImagesUrl: string[]
   videoUrl: string
   listingType: LISTING_PURPOSE
   spaceType: SPACE_TYPES
-  spaceCategory: SPACE_CATEGORIES
+  spaceCategories: SPACE_CATEGORIES
   city: string
   chowk: string
   municipality: string
@@ -76,11 +76,13 @@ export interface IHouse extends Document {
     busStation?: string
     cinemaHall?: string
   }
-  price: number
-  isPriceNegotiable: boolean
+  fare: number
+  isFareNegotiable: boolean
   isAvailable: boolean
   isExclusive: boolean
 }
+
+export interface HouseDocument extends IHouse, Document {}
 
 const houseSchema = new Schema<IHouse>(
   {
@@ -101,7 +103,7 @@ const houseSchema = new Schema<IHouse>(
       lowercase: true,
       trim: true,
     },
-    description: {
+    descriptionOfSpace: {
       type: String,
       required: true,
       lowercase: true,
@@ -124,7 +126,7 @@ const houseSchema = new Schema<IHouse>(
       default: SPACE_TYPES.COMMERCIAL,
       required: true,
     },
-    spaceCategory: {
+    spaceCategories: {
       type: String,
       enum: Object.values(SPACE_CATEGORIES),
       default: SPACE_CATEGORIES.LAND,
@@ -400,12 +402,12 @@ const houseSchema = new Schema<IHouse>(
         trim: true,
       },
     },
-    price: {
+    fare: {
       type: Number,
       min: 0,
       required: true,
     },
-    isPriceNegotiable: {
+    isFareNegotiable: {
       type: Boolean,
       required: true,
     },
@@ -423,5 +425,5 @@ const houseSchema = new Schema<IHouse>(
   },
 )
 
-const House = mongoose.model<IHouse>("House", houseSchema)
+const House = mongoose.model<HouseDocument, PaginateModel<HouseDocument>>("House", houseSchema)
 export default House

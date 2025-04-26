@@ -4,12 +4,12 @@ import { COUNTRY, LISTING_PURPOSE, SPACE_TYPES, SPACE_CATEGORIES } from "../mode
 export const createLandSchemaValidation = z.object({
   country: z.nativeEnum(COUNTRY).default(COUNTRY.NEPAL),
   title: z.string().min(1),
-  description: z.string().min(1),
+  descriptionOfSpace: z.string().min(1),
   spaceImagesUrl: z.array(z.string()).optional(),
   videoUrl: z.string().optional(),
   listingType: z.nativeEnum(LISTING_PURPOSE).default(LISTING_PURPOSE.RENT),
   spaceType: z.nativeEnum(SPACE_TYPES).default(SPACE_TYPES.COMMERCIAL),
-  spaceCategory: z.nativeEnum(SPACE_CATEGORIES).default(SPACE_CATEGORIES.LAND),
+  spaceCategories: z.nativeEnum(SPACE_CATEGORIES).default(SPACE_CATEGORIES.LAND),
   city: z.string().min(1),
   chowk: z.string().min(1),
   municipality: z.string().min(1),
@@ -40,8 +40,8 @@ export const createLandSchemaValidation = z.object({
       cinemaHall: z.string().optional(),
     })
     .optional(),
-  price: z.number().min(0),
-  isPriceNegotiable: z.boolean(),
+  fare: z.number().min(0),
+  isFareNegotiable: z.boolean(),
   isAvailable: z.boolean().optional(),
   isExclusive: z.boolean().optional(),
 })

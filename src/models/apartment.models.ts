@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, PaginateModel } from "mongoose"
 import mongoosePaginate from "mongoose-paginate-v2"
-import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE, SPACE_CATEGORIES } from "./room.models"
+import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE, SPACE_CATEGORIES, SPACE_TYPES } from "./room.models"
 
 export enum FURNISH_STATUS {
   FULL = "full",
@@ -38,6 +38,7 @@ export interface IApartment extends Document {
   fare: number
   nearPopularPlace: string
   listingType: LISTING_PURPOSE
+  spaceType: SPACE_TYPES
   noOfBedrooms: number
   noOfBathrooms: number
   noOfKitchens: number
@@ -54,12 +55,7 @@ export interface ApartmentDocument extends IApartment, Document {}
 const apartmentSchema = new Schema<ApartmentDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    spaceCategories: {
-      type: String,
-      enum: Object.values(SPACE_CATEGORIES),
-      default: SPACE_CATEGORIES.APARTMENT,
-      required: true,
-    },
+
     country: { type: String, required: true, lowercase: true, trim: true, default: COUNTRY.NEPAL },
     district: { type: String, lowercase: true, trim: true },
     city: { type: String, required: true, lowercase: true, trim: true },
@@ -84,7 +80,24 @@ const apartmentSchema = new Schema<ApartmentDocument>(
     phoneNumber: { type: Number, required: true },
     fare: { type: Number, required: true, min: 0 },
     nearPopularPlace: { type: String, required: true, lowercase: true, trim: true },
-    listingType: { type: String, required: true, lowercase: true, trim: true },
+    listingType: {
+      type: String,
+      enum: Object.values(LISTING_PURPOSE),
+      default: LISTING_PURPOSE.RENT,
+      required: true,
+    },
+    spaceType: {
+      type: String,
+      enum: Object.values(SPACE_TYPES),
+      default: SPACE_TYPES.COMMERCIAL,
+      required: true,
+    },
+    spaceCategories: {
+      type: String,
+      enum: Object.values(SPACE_CATEGORIES),
+      default: SPACE_CATEGORIES.LAND,
+      required: true,
+    },
     noOfBedrooms: { type: Number, required: true, min: 1 },
     noOfBathrooms: { type: Number, required: true, min: 0 },
     noOfKitchens: { type: Number, required: true, min: 0 },
