@@ -9,6 +9,7 @@ export const createHouseSchemaValidation = z.object({
   description: z.string().trim().toLowerCase(),
   spaceImagesUrl: z.array(z.string()).optional(),
   videoUrl: z.string().trim().optional(),
+  phoneNumber: z.number(),
   listingType: z.nativeEnum(LISTING_PURPOSE).default(LISTING_PURPOSE.RENT),
   spaceType: z.nativeEnum(SPACE_TYPES).default(SPACE_TYPES.COMMERCIAL),
   spaceCategories: z.nativeEnum(SPACE_CATEGORIES).default(SPACE_CATEGORIES.LAND),

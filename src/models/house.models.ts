@@ -9,6 +9,7 @@ export interface IHouse extends Document {
   descriptionOfSpace: string
   spaceImagesUrl: string[]
   videoUrl: string
+  phoneNumber: number
   listingType: LISTING_PURPOSE
   spaceType: SPACE_TYPES
   spaceCategories: SPACE_CATEGORIES
@@ -112,6 +113,10 @@ const houseSchema = new Schema<IHouse>(
     spaceImagesUrl: [{ type: String }],
     videoUrl: {
       type: String,
+      trim: true,
+    },
+    phoneNumber: {
+      type: Number,
       trim: true,
     },
     listingType: {

@@ -9,7 +9,7 @@ import {
 } from "../validators/house.validators"
 import CustomErrorHandler from "../utils/error.utils"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
-import { deleteMultipleFiles } from "../utils/s3-images.utils"
+import { deleteMultipleFiles, generatePresignedPostUrls } from "../utils/s3-images.utils"
 
 const allowedSortBy = ["fare", "createdAt"] as const
 const allowedSortOrder = ["asc", "desc"] as const
@@ -177,5 +177,20 @@ export const deleteHouse = asyncMiddleware(async (req: Request, res: Response) =
   res.status(200).json({
     success: true,
     message: "House deleted successfully",
+  })
+})
+
+export const getPresignedPostUrls = asyncMiddleware(async (req: Request, res: Response) => {
+  const { imageData } = req.body
+
+  if (!imageData || !Array.isArray(imageData)) {
+    return res.status(400).json({ error: "Invalid image data" })
+  }
+
+  const { presignedPosts, fileUrls } = await generatePresignedPostUrls("house-images", imageData)
+
+  return res.status(200).json({
+    presignedPosts,
+    fileUrls,
   })
 })

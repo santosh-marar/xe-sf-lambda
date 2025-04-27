@@ -9,6 +9,7 @@ export interface ILand extends Document {
   descriptionOfSpace: string
   spaceImagesUrl: string[]
   videoUrl: string
+  phoneNumber: number
   listingType: LISTING_PURPOSE
   spaceType: SPACE_TYPES
   spaceCategories: SPACE_CATEGORIES
@@ -76,6 +77,10 @@ const landSchema = new Schema<ILand>(
     spaceImagesUrl: [{ type: String }],
     videoUrl: {
       type: String,
+      trim: true,
+    },
+    phoneNumber: {
+      type: Number,
       trim: true,
     },
     listingType: {

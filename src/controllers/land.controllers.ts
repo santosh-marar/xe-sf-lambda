@@ -186,7 +186,7 @@ export const getPresignedPostUrls = asyncMiddleware(async (req: Request, res: Re
     return res.status(400).json({ error: "Invalid image data" })
   }
 
-  const { presignedPosts, fileUrls } = await generatePresignedPostUrls("room-images", imageData)
+  const { presignedPosts, fileUrls } = await generatePresignedPostUrls("land-images", imageData)
 
   return res.status(200).json({
     presignedPosts,

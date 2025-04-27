@@ -1,8 +1,22 @@
 import express from "express"
-import { createHouse, deleteHouse, getAllHouses, getHouseById, updateHouse } from "../controllers/house.controllers"
+import {
+  createHouse,
+  deleteHouse,
+  getAllHouses,
+  getHouseById,
+  updateHouse,
+  getPresignedPostUrls,
+} from "../controllers/house.controllers"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 
 const router = express.Router()
+
+router.post(
+  "/get-signed-url",
+  isAuthenticated,
+  authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
+  getPresignedPostUrls,
+)
 
 router.post("/", isAuthenticated, authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]), createHouse)
 

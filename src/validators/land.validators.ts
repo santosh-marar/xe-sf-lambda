@@ -2,11 +2,13 @@ import { z } from "zod"
 import { COUNTRY, LISTING_PURPOSE, SPACE_TYPES, SPACE_CATEGORIES } from "../models/room.models"
 
 export const createLandSchemaValidation = z.object({
+  userId: z.string().min(1),
   country: z.nativeEnum(COUNTRY).default(COUNTRY.NEPAL),
   title: z.string().min(1),
   descriptionOfSpace: z.string().min(1),
   spaceImagesUrl: z.array(z.string()).optional(),
   videoUrl: z.string().optional(),
+  phoneNumber: z.number(),
   listingType: z.nativeEnum(LISTING_PURPOSE).default(LISTING_PURPOSE.RENT),
   spaceType: z.nativeEnum(SPACE_TYPES).default(SPACE_TYPES.COMMERCIAL),
   spaceCategories: z.nativeEnum(SPACE_CATEGORIES).default(SPACE_CATEGORIES.LAND),
