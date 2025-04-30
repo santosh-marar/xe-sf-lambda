@@ -6,7 +6,7 @@ export const createHouseSchemaValidation = z.object({
   userId: z.string().min(1),
   country: z.nativeEnum(COUNTRY).default(COUNTRY.NEPAL),
   title: z.string().trim().toLowerCase(),
-  description: z.string().trim().toLowerCase(),
+  descriptionOfSpace: z.string().trim().toLowerCase(),
   spaceImagesUrl: z.array(z.string()).optional(),
   videoUrl: z.string().trim().optional(),
   phoneNumber: z.number(),

@@ -44,8 +44,8 @@ export const createLandSchemaValidation = z.object({
     .optional(),
   fare: z.number().min(0),
   isFareNegotiable: z.boolean(),
-  isAvailable: z.boolean().optional(),
-  isExclusive: z.boolean().optional(),
+  isAvailable: z.boolean().default(true),
+  isExclusive: z.boolean().default(false),
 })
 
 export type LandCreateType = z.infer<typeof createLandSchemaValidation>
