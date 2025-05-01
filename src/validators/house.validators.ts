@@ -12,7 +12,7 @@ export const createHouseSchemaValidation = z.object({
   phoneNumber: z.number(),
   listingType: z.nativeEnum(LISTING_PURPOSE).default(LISTING_PURPOSE.RENT),
   spaceType: z.nativeEnum(SPACE_TYPES).default(SPACE_TYPES.COMMERCIAL),
-  spaceCategories: z.nativeEnum(SPACE_CATEGORIES).default(SPACE_CATEGORIES.LAND),
+  spaceCategories: z.nativeEnum(SPACE_CATEGORIES).default(SPACE_CATEGORIES.HOUSE),
   city: z.string().trim().toLowerCase(),
   chowk: z.string().trim().toLowerCase(),
   municipality: z.string().trim().toLowerCase(),

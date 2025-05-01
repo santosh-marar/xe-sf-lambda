@@ -1,10 +1,18 @@
 import { z } from "zod"
 import mongoose from "mongoose"
-import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE } from "../models/room.models"
+import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE, SPACE_CATEGORIES, SPACE_TYPES } from "../models/room.models"
 
 // Zod schema for Flat validation
 export const flatZodSchema = z.object({
   userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), { message: "Invalid ObjectId" }),
+  spaceCategories: z
+    .string()
+    .default(SPACE_CATEGORIES.FLAT)
+    .transform((val) => val?.toLowerCase().trim()),
+  spaceType: z
+    .string()
+    .default(SPACE_TYPES["MIXED-USE"])
+    .transform((val) => val?.toLowerCase().trim()),
   country: z.nativeEnum(COUNTRY).default(COUNTRY.NEPAL),
   district: z
     .string()

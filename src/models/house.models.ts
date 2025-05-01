@@ -1,6 +1,7 @@
 import mongoose, { Document, PaginateModel, Schema } from "mongoose"
 import { LISTING_PURPOSE, SPACE_CATEGORIES, SPACE_TYPES, COUNTRY } from "./room.models"
 import { FURNISH_STATUS } from "./flat.models"
+import mongoosePaginate from "mongoose-paginate-v2"
 
 export interface IHouse extends Document {
   userId: mongoose.Types.ObjectId
@@ -60,7 +61,7 @@ export interface IHouse extends Document {
     lawn?: boolean
   }
   nearByLocation?: {
-    landmark?: string
+    housemark?: string
     hospital?: string
     school?: string
     park?: string
@@ -429,6 +430,13 @@ const houseSchema = new Schema<IHouse>(
     timestamps: true,
   },
 )
+
+houseSchema.plugin(mongoosePaginate)
+
+// houseSchema.index({ city: 1 })
+// houseSchema.index({ chowk: "text" })
+// houseSchema.index({ fare: 1 })
+// houseSchema.index({ isAvailable: 1, isActive: 1 })
 
 const House = mongoose.model<HouseDocument, PaginateModel<HouseDocument>>("House", houseSchema)
 export default House

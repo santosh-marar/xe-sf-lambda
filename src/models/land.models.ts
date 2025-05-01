@@ -92,7 +92,7 @@ const landSchema = new Schema<ILand>(
     spaceType: {
       type: String,
       enum: Object.values(SPACE_TYPES),
-      default: SPACE_TYPES.COMMERCIAL,
+      default: SPACE_TYPES["MIXED-USE"],
       required: true,
     },
     spaceCategories: {
@@ -260,10 +260,10 @@ const landSchema = new Schema<ILand>(
   },
 )
 
-landSchema.index({ city: 1 })
-landSchema.index({ chowk: "text" })
-landSchema.index({ fare: 1 })
-landSchema.index({ isAvailable: 1, isActive: 1 })
+// landSchema.index({ city: 1 })
+// landSchema.index({ chowk: "text" })
+// landSchema.index({ fare: 1 })
+// landSchema.index({ isAvailable: 1, isActive: 1 })
 
 // Apply pagination plugin
 landSchema.plugin(mongoosePaginate)

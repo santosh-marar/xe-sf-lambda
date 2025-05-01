@@ -6,6 +6,7 @@ import {
   getHouseById,
   updateHouse,
   getPresignedPostUrls,
+  getMyHouses,
 } from "../controllers/house.controllers"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 
@@ -21,6 +22,13 @@ router.post(
 router.post("/", isAuthenticated, authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]), createHouse)
 
 router.get("/", getAllHouses)
+
+router.get(
+  "/my-houses",
+  isAuthenticated,
+  authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
+  getMyHouses,
+)
 
 router.get("/:id", getHouseById)
 

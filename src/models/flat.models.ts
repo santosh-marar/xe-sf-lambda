@@ -89,13 +89,13 @@ const flatSchema = new Schema<FlatDocument>(
     spaceType: {
       type: String,
       enum: Object.values(SPACE_TYPES),
-      default: SPACE_TYPES.COMMERCIAL,
+      default: SPACE_TYPES["MIXED-USE"],
       required: true,
     },
     spaceCategories: {
       type: String,
       enum: Object.values(SPACE_CATEGORIES),
-      default: SPACE_CATEGORIES.LAND,
+      default: SPACE_CATEGORIES.FLAT,
       required: true,
     },
     noOfBedrooms: { type: Number, required: true, min: 1 },

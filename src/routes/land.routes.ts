@@ -6,6 +6,7 @@ import {
   getLandById,
   updateLand,
   getPresignedPostUrls,
+  getMyLands,
 } from "../controllers/land.controllers"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 
@@ -21,6 +22,13 @@ router.post(
 router.post("/", isAuthenticated, authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]), createLand)
 
 router.get("/", getAllLands)
+
+router.get(
+  "/my-lands",
+  isAuthenticated,
+  authorizeRoles([USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
+  getMyLands,
+)
 
 router.get("/:id", getLandById)
 
