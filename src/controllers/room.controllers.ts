@@ -9,7 +9,7 @@ import {
   RoomUpdateTypes,
 } from "../validators/room.validators"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
-import Apartment from "../models/apartment.models"
+import Flat from "../models/flat.models"
 import { deleteMultipleFiles, generatePresignedPostUrls } from "../utils/s3-images.utils"
 import Land from "../models/land.models"
 import House from "../models/house.models"
@@ -290,18 +290,18 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
     matchStage.spaceCategories = spaceCategories
   }
 
-  const apartmentMatch = {
+  const flatMatch = {
     ...matchStage,
     ...(minBedrooms && { noOfBedrooms: { $gte: parseInt(minBedrooms as string) } }),
   }
   const roomMatch = matchStage
 
-  const apartmentResults = Apartment.aggregate([
-    { $match: apartmentMatch },
+  const flatResults = Flat.aggregate([
+    { $match: flatMatch },
     { $sort: sortOption },
     {
       $project: {
-        spaceCategories: "apartment",
+        spaceCategories: "flat",
         city: 1,
         chowk: 1,
         fare: 1,
@@ -373,15 +373,10 @@ export const getSpaces = asyncMiddleware(async (req: Request, res: Response) => 
   ])
 
   // add lands
-  const [apartments, rooms, lands, houses] = await Promise.all([
-    apartmentResults,
-    roomResults,
-    landResults,
-    houseResults,
-  ])
+  const [flats, rooms, lands, houses] = await Promise.all([flatResults, roomResults, landResults, houseResults])
 
   // Combine the results from all property types
-  const combinedResults = [...apartments, ...rooms, ...lands, ...houses].sort((a, b) => {
+  const combinedResults = [...flats, ...rooms, ...lands, ...houses].sort((a, b) => {
     return sortOption.fare
       ? sortOption.fare * (a.fare - b.fare)
       : sortOption.createdAt * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
@@ -454,7 +449,7 @@ export const recentlyCreatedSpaces = asyncMiddleware(async (req: Request, res: R
   const aggregationPipeline = [
     {
       $unionWith: {
-        coll: "apartments",
+        coll: "flats",
         pipeline: [],
       },
     },
@@ -484,7 +479,7 @@ export const recentlyCreatedSpaces = asyncMiddleware(async (req: Request, res: R
         //   $switch: {
         //     branches: [
         //       { case: { $eq: ["$__t", "Room"] }, then: "room" },
-        //       { case: { $eq: ["$__t", "Apartment"] }, then: "apartment" },
+        //       { case: { $eq: ["$__t", "Flat"] }, then: "flat" },
         //       { case: { $eq: ["$__t", "Land"] }, then: "land" },
         //       { case: { $eq: ["$__t", "House"] }, then: "house" },
         //     ],

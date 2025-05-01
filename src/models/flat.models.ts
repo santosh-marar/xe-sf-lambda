@@ -9,8 +9,8 @@ export enum FURNISH_STATUS {
   NONE = "none",
 }
 
-// IApartment Interface
-export interface IApartment extends Document {
+// IFlat Interface
+export interface IFlat extends Document {
   userId: mongoose.Types.ObjectId
   spaceCategories: SPACE_CATEGORIES
   country: string
@@ -49,10 +49,10 @@ export interface IApartment extends Document {
   isExclusive: boolean
 }
 
-export interface ApartmentDocument extends IApartment, Document {}
+export interface FlatDocument extends IFlat, Document {}
 
-// Apartment Schema
-const apartmentSchema = new Schema<ApartmentDocument>(
+// Flat Schema
+const flatSchema = new Schema<FlatDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 
@@ -110,17 +110,13 @@ const apartmentSchema = new Schema<ApartmentDocument>(
   { timestamps: true },
 )
 
-// apartmentSchema.index({ city: 1 })
-// apartmentSchema.index({ chowk: "text" })
-// apartmentSchema.index({ fare: 1 })
-// apartmentSchema.index({ isAvailable: 1, isActive: 1 })
+// flatSchema.index({ city: 1 })
+// flatSchema.index({ chowk: "text" })
+// flatSchema.index({ fare: 1 })
+// flatSchema.index({ isAvailable: 1, isActive: 1 })
 
 // Apply pagination plugin
-apartmentSchema.plugin(mongoosePaginate)
+flatSchema.plugin(mongoosePaginate)
 
-const Apartment = mongoose.model<ApartmentDocument, PaginateModel<ApartmentDocument>>(
-  "Apartment",
-  apartmentSchema,
-  "apartments",
-)
-export default Apartment
+const Flat = mongoose.model<FlatDocument, PaginateModel<FlatDocument>>("Flat", flatSchema, "flats")
+export default Flat

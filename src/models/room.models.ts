@@ -3,9 +3,8 @@ import mongoosePaginate from "mongoose-paginate-v2"
 
 export enum SPACE_CATEGORIES {
   ROOM = "room",
-  APARTMENT = "apartment",
-  HOUSE = "house",
   FLAT = "flat",
+  HOUSE = "house",
   LAND = "land",
 }
 

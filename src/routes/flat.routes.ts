@@ -1,60 +1,60 @@
 import { Router } from "express"
 import {
-  createApartment,
-  deleteApartment,
-  getAllApartments,
-  getApartmentById,
-  getMyAllApartments,
-  getSignedUrlForApartmentImages,
-  updateApartment,
-} from "../controllers/apartment.controllers"
+  createFlat,
+  deleteFlat,
+  getAllFlats,
+  getFlatById,
+  getMyAllFlats,
+  getSignedUrlForFlatImages,
+  updateFlat,
+} from "../controllers/flat.controllers"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 
-const apartmentRouter = Router()
+const flatRouter = Router()
 
-// Create a new apartment
-apartmentRouter.post(
+// Create a new flat
+flatRouter.post(
   "/",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
-  createApartment,
+  createFlat,
 )
 
-apartmentRouter.get(
-  "/my-apartments",
+flatRouter.get(
+  "/my-flats",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_BROKER, USER_ROLES.SPACE_PROVIDER]),
-  getMyAllApartments,
+  getMyAllFlats,
 )
 
-// Get all apartments
-apartmentRouter.get("/", getAllApartments)
+// Get all flats
+flatRouter.get("/", getAllFlats)
 
-// Get a single apartment
-apartmentRouter.get("/:id", getApartmentById)
+// Get a single flat
+flatRouter.get("/:id", getFlatById)
 
-// Update a apartment
-apartmentRouter.put(
+// Update a flat
+flatRouter.put(
   "/:id",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
-  updateApartment,
+  updateFlat,
 )
 
-// Delete a apartment
-apartmentRouter.delete(
+// Delete a flat
+flatRouter.delete(
   "/:id",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
-  deleteApartment,
+  deleteFlat,
 )
 
-// Get apartments signedUrl
-apartmentRouter.post(
+// Get flats signedUrl
+flatRouter.post(
   "/get-signed-url",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SPACE_PROVIDER, USER_ROLES.SPACE_BROKER]),
-  getSignedUrlForApartmentImages,
+  getSignedUrlForFlatImages,
 )
 
-export default apartmentRouter
+export default flatRouter

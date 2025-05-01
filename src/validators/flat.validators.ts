@@ -2,8 +2,8 @@ import { z } from "zod"
 import mongoose from "mongoose"
 import { COUNTRY, GENDER_PREFERENCE, LISTING_PURPOSE } from "../models/room.models"
 
-// Zod schema for Apartment validation
-export const apartmentZodSchema = z.object({
+// Zod schema for Flat validation
+export const flatZodSchema = z.object({
   userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), { message: "Invalid ObjectId" }),
   country: z.nativeEnum(COUNTRY).default(COUNTRY.NEPAL),
   district: z
@@ -54,8 +54,8 @@ export const apartmentZodSchema = z.object({
 })
 
 // Infer TypeScript types from the Zod schema
-export type ApartmentCreateTypes = z.infer<typeof apartmentZodSchema>
+export type FlatCreateTypes = z.infer<typeof flatZodSchema>
 
-export const apartmentUpdateSchema = apartmentZodSchema.partial()
+export const flatUpdateSchema = flatZodSchema.partial()
 
-export type ApartmentUpdateTypes = z.infer<typeof apartmentUpdateSchema>
+export type FlatUpdateTypes = z.infer<typeof flatUpdateSchema>

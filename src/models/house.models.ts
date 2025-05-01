@@ -1,6 +1,6 @@
 import mongoose, { Document, PaginateModel, Schema } from "mongoose"
 import { LISTING_PURPOSE, SPACE_CATEGORIES, SPACE_TYPES, COUNTRY } from "./room.models"
-import { FURNISH_STATUS } from "./apartment.models"
+import { FURNISH_STATUS } from "./flat.models"
 
 export interface IHouse extends Document {
   userId: mongoose.Types.ObjectId

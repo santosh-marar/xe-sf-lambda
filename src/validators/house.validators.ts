@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { COUNTRY, LISTING_PURPOSE, SPACE_CATEGORIES, SPACE_TYPES } from "../models/room.models"
-import { FURNISH_STATUS } from "../models/apartment.models"
+import { FURNISH_STATUS } from "../models/flat.models"
 
 export const createHouseSchemaValidation = z.object({
   userId: z.string().min(1),

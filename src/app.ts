@@ -9,7 +9,7 @@ import authRoutes from "./routes/auth.routes"
 import userRoutes from "./routes/user.routes"
 import addressRoutes from "./routes/address.routes"
 import roomRoutes from "./routes/room.routes"
-import apartmentRoutes from "./routes/apartment.routes"
+import flatRoutes from "./routes/flat.routes"
 import { limiter } from "./utils/rate.limit.utils"
 import searchRoutes from "./routes/search.routes"
 import adminRoutes from "./routes/admin.routes"
@@ -70,7 +70,7 @@ app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/addresses", addressRoutes)
 app.use("/api/v1/rooms", roomRoutes)
-app.use("/api/v1/apartments", apartmentRoutes)
+app.use("/api/v1/flats", flatRoutes)
 app.use("/api/v1/lands", landRoutes)
 app.use("/api/v1/houses", houseRoutes)
 app.use("/api/v1/spaces", searchRoutes)

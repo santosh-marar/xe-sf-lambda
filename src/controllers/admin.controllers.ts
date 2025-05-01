@@ -3,7 +3,7 @@ import User from "../models/users.models"
 
 import asyncMiddleware from "../middlewares/async.middlewares"
 import Room from "../models/room.models"
-import Apartment from "../models/apartment.models"
+import Flat from "../models/flat.models"
 import CustomErrorHandler from "../utils/error.utils"
 import { USER_ROLES } from "../middlewares/auth.middlewares"
 
@@ -22,20 +22,20 @@ export const adminDashboardApi = asyncMiddleware(async (req: Request, res: Respo
   const [
     totalUsers,
     totalRooms,
-    totalApartments,
+    totalFlats,
     newUsersCount,
     newRoomsCount,
-    newApartmentsCount,
+    newFlatsCount,
     latestUsers,
     latestRooms,
-    latestApartments,
+    latestFlats,
   ] = await Promise.all([
     User.countDocuments(),
     Room.countDocuments(),
-    Apartment.countDocuments(),
+    Flat.countDocuments(),
     User.countDocuments({ createdAt: { $gte: START_DATE } }),
     Room.countDocuments({ createdAt: { $gte: START_DATE } }),
-    Apartment.countDocuments({ createdAt: { $gte: START_DATE } }),
+    Flat.countDocuments({ createdAt: { $gte: START_DATE } }),
     User.aggregate([
       { $sort: { createdAt: -1 } }, // Sort by newest first
       { $limit: 5 }, // Get the top 5
@@ -67,7 +67,7 @@ export const adminDashboardApi = asyncMiddleware(async (req: Request, res: Respo
         },
       },
     ]),
-    Apartment.aggregate([
+    Flat.aggregate([
       { $sort: { createdAt: -1 } }, // Sort by newest first
       { $limit: 5 }, // Get the top 5
       {
@@ -89,7 +89,7 @@ export const adminDashboardApi = asyncMiddleware(async (req: Request, res: Respo
   // Calculate growth percentages
   const userGrowth = ((newUsersCount / Math.max(1, totalUsers - newUsersCount)) * 100).toFixed(2)
   const roomGrowth = ((newRoomsCount / Math.max(1, totalRooms - newRoomsCount)) * 100).toFixed(2)
-  const apartmentGrowth = ((newApartmentsCount / Math.max(1, totalApartments - newApartmentsCount)) * 100).toFixed(2)
+  const flatGrowth = ((newFlatsCount / Math.max(1, totalFlats - newFlatsCount)) * 100).toFixed(2)
 
   // Response
   res.json({
@@ -98,14 +98,14 @@ export const adminDashboardApi = asyncMiddleware(async (req: Request, res: Respo
       userGrowth,
       totalRooms,
       roomGrowth,
-      totalApartments,
-      apartmentGrowth,
+      totalFlats,
+      flatGrowth,
       period: `${daysInt} days`,
     },
     latest: {
       users: latestUsers,
       rooms: latestRooms,
-      apartments: latestApartments,
+      flats: latestFlats,
     },
   })
 })
@@ -240,10 +240,10 @@ export const getAllRoomsWithUser = asyncMiddleware(async (req: Request, res: Res
   })
 })
 
-// @desc    Get all apartments with their respective user details
-// @route   GET /api/v1/apartments-with-owner
+// @desc    Get all flats with their respective user details
+// @route   GET /api/v1/flats-with-owner
 // @access  Private only Admin
-export const getAllApartmentsWithUser = asyncMiddleware(async (req: Request, res: Response) => {
+export const getAllFlatsWithUser = asyncMiddleware(async (req: Request, res: Response) => {
   const user = req.user
   const isAdmin = user?.roles?.includes(USER_ROLES.ADMIN)
 
@@ -256,7 +256,7 @@ export const getAllApartmentsWithUser = asyncMiddleware(async (req: Request, res
   const pageSize = parseInt(req.query.limit as string, 10) || 10
 
   // Aggregation pipeline for pagination
-  const apartmentsAggregate = Apartment.aggregate([
+  const flatsAggregate = Flat.aggregate([
     {
       $lookup: {
         from: "users",
@@ -280,7 +280,7 @@ export const getAllApartmentsWithUser = asyncMiddleware(async (req: Request, res
         // facility: 1,
         genderPreference: 1,
         isSpaceProviderLiving: 1,
-        descriptionOfApartment: 1,
+        descriptionOfFlat: 1,
         rulesOfLiving: 1,
         phoneNumber: 1,
         fare: 1,
@@ -302,8 +302,8 @@ export const getAllApartmentsWithUser = asyncMiddleware(async (req: Request, res
     },
   ])
 
-  // Aggregation to count total apartments
-  const totalApartmentsAggregate = Apartment.aggregate([
+  // Aggregation to count total flats
+  const totalFlatsAggregate = Flat.aggregate([
     {
       $lookup: {
         from: "users",
@@ -316,33 +316,33 @@ export const getAllApartmentsWithUser = asyncMiddleware(async (req: Request, res
   ])
 
   // Perform aggregation and pagination
-  const [paginatedApartments, totalApartmentsResult] = await Promise.all([
-    apartmentsAggregate.skip((pageNumber - 1) * pageSize).limit(pageSize),
-    totalApartmentsAggregate,
+  const [paginatedFlats, totalFlatsResult] = await Promise.all([
+    flatsAggregate.skip((pageNumber - 1) * pageSize).limit(pageSize),
+    totalFlatsAggregate,
   ])
 
-  // If no apartments found
-  if (paginatedApartments.length === 0) {
-    throw new CustomErrorHandler(400, "No apartments found")
+  // If no flats found
+  if (paginatedFlats.length === 0) {
+    throw new CustomErrorHandler(400, "No flats found")
   }
 
   // Pagination metadata
-  const totalNoOfApartments = totalApartmentsResult[0]?.total || 0
-  const totalPages = Math.ceil(totalNoOfApartments / pageSize)
+  const totalNoOfFlats = totalFlatsResult[0]?.total || 0
+  const totalPages = Math.ceil(totalNoOfFlats / pageSize)
   const pagination = {
     currentPage: pageNumber,
     totalPages,
     pageSize,
-    totalNoOfApartments,
+    totalNoOfFlats,
     hasPrevPage: pageNumber > 1,
     hasNextPage: pageNumber < totalPages,
   }
 
-  // Response with paginated apartments and metadata
+  // Response with paginated flats and metadata
   res.status(200).json({
     success: true,
-    message: "Apartments found successfully",
-    data: paginatedApartments,
+    message: "Flats found successfully",
+    data: paginatedFlats,
     pagination,
   })
 })

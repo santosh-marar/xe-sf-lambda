@@ -2,7 +2,7 @@ import express from "express"
 import isAuthenticated, { authorizeRoles, USER_ROLES } from "../middlewares/auth.middlewares"
 import {
   adminDashboardApi,
-  getAllApartmentsWithUser,
+  getAllFlatsWithUser,
   getAllRoomsWithUser,
   getAllUsers,
 } from "../controllers/admin.controllers"
@@ -21,10 +21,10 @@ router.get(
 )
 
 router.get(
-  "/apartments-with-owner",
+  "/flats-with-owner",
   isAuthenticated,
   authorizeRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN]),
-  getAllApartmentsWithUser,
+  getAllFlatsWithUser,
 )
 
 export default router
